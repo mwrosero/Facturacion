@@ -13,7 +13,7 @@
     @csrf
     @if (session()->has('mensaje'))
         <div class="alert alert-warning">
-            {{ session('mensaje') }}
+            {{ session('mensaje') }} 
         </div>
     @endif
     @if($errors->has('csrf_token'))
