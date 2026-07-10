@@ -1,0 +1,172 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Camas Solca</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/index.css">
+		<link rel="stylesheet" href="css/login.css">
+		<script src="js/jquery-3.4.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/popper.min.js"></script>
+		<!-- jQuery Custom Scroller CDN -->
+	    <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+	    <!-- Font Awesome JS -->
+	    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+	    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+		<link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
+		<link rel="icon" href="images/logo.png" type="image/x-icon">
+		<script>
+			/*var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+			var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+			alert(w+" - "+h);*/
+			var flag_error = false;
+		</script>
+		<style>
+			h3{
+				font-size: 1.2rem;
+			}
+
+			h2{
+				font-size: 1.5rem;
+			}
+			input[type="checkbox"] {
+			    width: 25px;
+			    height: 25px;
+			}
+			table{
+			    background: rgba(255, 255, 255, 0.75);
+			}
+		</style>
+	</head>
+	<body>
+	    <div class="container">
+	    	<div class="row">
+	    		<div class="col-sm-12 col-md-4 col-lg-3">
+	    			<img src="images/logo-solca-2019.png" class="w-100">
+	    		</div>
+	    		<div class="col-sm-12 col-md-8 col-lg-9">
+	    			<h3 class="text-center p-3">SOCIEDAD DE LUCHA CONTRA EL CÁNCER<br>INSTITUTO ONCOLÓGICO NACIONAL<br>DR. JUAN TANCA MARENGO</h3>
+	    			<h2 class="text-center"><b>GASTOS DE OPERACIÓN Y ANESTECIA</b></h2>
+	    		</div>
+	    	</div>
+	    	<br>
+	    	<div class="row">
+	    		<div class="col-sm-12 col-md-6">
+	    			<div class="form-group">
+		    			<label>Fecha</label>
+		    			<input type="date" name="" class="w-100">
+		    		</div>
+	    		</div>
+	    		<div class="col-sm-12 col-md-6">
+	    			<div class="form-group">
+		    			<label>H.C.#</label>
+		    			<input type="number" name="" class="w-100">
+		    		</div>
+	    		</div>
+	    		<div class="col-sm-12 col-md-12">
+	    			<div class="form-group">
+		    			<label>Paciente</label>
+		    			<input type="text" name="" class="w-100">
+		    		</div>
+	    		</div>
+	    	</div>
+	    	<div class="row">
+	    		<table class="table">
+	    			<thead>
+	    				<tr>
+	    					<th scope="col">Código</th>
+	    					<th scope="col">Descripción</th>
+	    					<th scope="col">Acción</th>
+	    				</tr>
+	    			</thead>
+	    			<tbody>
+	    				<tr>
+	    					<th scope="row">475</th>
+	    					<td>Categoría #1</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">489</th>
+	    					<td>Categoría #1 ANESTECIA</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">476</th>
+	    					<td>Categoría #2</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">490</th>
+	    					<td>Categoría #2 ANESTECIA</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">477</th>
+	    					<td>Categoría #3</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">491</th>
+	    					<td>Categoría #3 ANESTECIA</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">478</th>
+	    					<td>Categoría #4</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">492</th>
+	    					<td>Categoría #4 ANESTECIA</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">479</th>
+	    					<td>NEUROCIRUGÍA</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">493</th>
+	    					<td>NEUROCIRUGÍA ANESTECIA</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">463</th>
+	    					<td>DERECHO DE QUIRÓFANO</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">8747</th>
+	    					<td>1 HABITACIÓN MÚLTIPLE 4 +CAMAS</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">4547</th>
+	    					<td>OTROS DE ALTA COMPLEJIDAD</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">4548</th>
+	    					<td>OTROS DE MEDIANA COMPLEJIDAD</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    				<tr>
+	    					<th scope="row">4549</th>
+	    					<td>OTROS DE MENOR COMPLEJIDAD</td>
+	    					<td><input type="checkbox" name=""></td>
+	    				</tr>
+	    			</tbody>
+	    		</table>
+	    	</div>
+	    	<div class="row">
+	    		<div class="col-sm-12 col-md-6 col-lg-6 offset-md-3 offset-lg-3">
+	    			<p class="text-center m-4">JEFE DEL DEPARTAMENTO<br>FIRMA Y SELLO</p>
+	    		</div>
+	    		<div class="col-sm-12 col-md-6 col-lg-6 offset-md-3 offset-lg-3">
+	    			<hr class="m-5">
+	    		</div>
+	    	</div>
+	    </div>
+	</body>
+</html>
