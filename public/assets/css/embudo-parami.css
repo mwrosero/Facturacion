@@ -1,0 +1,8 @@
+:root {
+  --bg-vris-blue: #0070C7;
+  --bg-vris-very-dark-blue-medium: #004377;
+}
+
+.bg-veris{
+  background: var(--bg-vris-blue);
+}

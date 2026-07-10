@@ -1,0 +1,18 @@
+:root {
+  /*--bg-vris-blue: #0071CE;*/
+  --bg-vris-blue: #0070C7 !important;
+  --verisAi: #0070C7 !important;
+}
+
+.txt-veris{
+  color: var(--verisAi) !important;
+}
+
+.bg-alt {
+  color: var(--verisAi);
+  border: 1px solid var(--verisAi) !important;
+}
+
+.bg-veris{
+  background: var(--verisAi);
+}
