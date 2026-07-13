@@ -9,7 +9,7 @@
     <img class="logo-login" src="../../assets/img/veris/logo-veris-2025.svg">
 </div>
 <!-- /Logo -->
-<form id="formAuthentication" class="mb-3" action="/external/farmacia/login" method="POST">
+<form id="formAuthentication" class="mb-3" action="/login-external" method="POST">
     @csrf
     @if (session()->has('mensaje'))
         <div class="alert alert-warning">

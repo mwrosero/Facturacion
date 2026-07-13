@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\CaptureSubdomain::class,
     ];
 
     /**
@@ -66,5 +67,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth.external' => \App\Http\Middleware\ExternalVerisMiddleware::class,
         'auth.veris'    => \App\Http\Middleware\VerisMiddleware::class,
+        'externalVeris' => \App\Http\Middleware\CaptureSubdomain::class,
     ];
 }

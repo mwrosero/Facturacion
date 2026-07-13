@@ -1115,7 +1115,7 @@ $(document).ready(function() {
             localStorage.setItem('sessionTime', new Date().getTime());
         }
 
-        setInterval(checkAndUpdateToken, 10 * 60 * 1000);
+        // setInterval(checkAndUpdateToken, 10 * 60 * 1000);
     //}
 });
 

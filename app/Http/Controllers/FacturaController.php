@@ -13,4 +13,8 @@ class FacturaController extends Controller
     {
         //
     }
+
+    public function showDocumentos(){
+        return view('external.dashboard');
+    }
 }

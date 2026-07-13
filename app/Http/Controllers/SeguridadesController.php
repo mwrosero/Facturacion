@@ -17,25 +17,31 @@ class SeguridadesController extends Controller
         return view('seguridades.login')->with('accessToken',$this->getTokenExternalDigitales());
     }
 
-    public function autenticar(Request $request){
+    public function loginExternal(Request $request){
         $data = $request->all();
         $numeroIdentificacion = $data['numeroIdentificacion'];
         $password = $data['password'];
 
-        $method = '/'.Veris::BASE_WAR.'/v1/seguridad/login';
-        $res =  Http::withOptions([
-                    'verify' => false, // Desactivar verificación de certificados
-                ])->withHeaders([
-                    'Application' => Veris::APPLICATION,
-                    'Authorization' => 'Basic '.base64_encode(strtoupper($numeroIdentificacion) .":". $password),
-                ])->post(Veris::BASE_URL.$method);
+        $method = '/'.Veris::BASE_WAR.'/v1/comprobantes/portal_usuario/login';
         
-        $response = json_decode($res->body());
-        // dd($response);
+        $accessToken = $this->getTokenExternalFacturacion();
+
+        $response = Veris::call([
+            'endpoint'  => Veris::BASE_URL.$method,
+            'data'      => [
+                "numeroIdentificacion" => $numeroIdentificacion, 
+                "clave" => $data['password']
+            ],
+            'token'     => $accessToken,
+            'method'    => 'POST'
+        ]);
+
+        echo Veris::BASE_URL.$method;
+        dd($response);
         if($response->code == 200){
             if (!is_null($response->data->codigoActivacion)) {
                 Session::put('userDataTmp', $response->data);
-                return redirect('/activar-cuenta');
+                return redirect('/configurar-clave');
             }else{
                 Session::put('userData', $response->data);
                 return redirect('/');
@@ -136,5 +142,34 @@ class SeguridadesController extends Controller
         // dd($response->data->tokenPush);
         session(['accessTokenDigitales' => $response->data->tokenPush]);
         return $response->data->tokenPush;
+    }
+
+    public function getTokenExternalFacturacion($esDesarrollo = false){
+        $token = session('accessTokenFacturacion', null);
+
+        if( $token !== null ){
+            //return $token;
+        }
+
+        if($esDesarrollo){
+            $nameWar = Veris::FACTURACION_WAR_DESA;
+            $basic = Veris::BASICAUTHFACTURACIONDESARROLLO;
+        }else{
+            $nameWar = Veris::FACTURACION_WAR;
+            $basic = VERIS::BASICAUTHFACTURACION;
+        }
+
+        $method = '/'.$nameWar.'/v1/autenticacion/login';
+        $response = Veris::call([
+            'endpoint' => Veris::BASE_URL.$method,
+            'basic' => $basic,
+            'method'   => 'POST',
+            'tokenDesarrollo' => $esDesarrollo
+        ]);
+        // echo $basic;
+        // dump(Veris::BASE_URL.$method);
+        // dd($response);
+        session(['accessTokenFacturacion' => $response->data->idToken]);
+        return $response->data->idToken;
     }
 }

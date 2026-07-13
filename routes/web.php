@@ -22,8 +22,11 @@ Route::get('/', function () {
 Route::post('/login-external', [SeguridadesController::class, 'loginExternal']);
 Route::get('/recuperar-clave', [SeguridadesController::class, 'showRecuperar']);
 Route::post('/recuperar-clave', [SeguridadesController::class, 'sendRecuperar']); // Acción de enviar correo/API
+Route::get('/configurar-clave', [SeguridadesController::class, 'showActualizarAfterLogin']);
 Route::get('/actualizar-clave', [SeguridadesController::class, 'showActualizar']);
 Route::post('/actualizar-clave', [SeguridadesController::class, 'updateClave']);
+
+Route::get('/documentos', [FacturaController::class, 'showDocumentos']);
 
 // --- Rutas Protegidas (Factura) ---
 Route::middleware(['auth.external'])->group(function () {
