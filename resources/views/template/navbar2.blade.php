@@ -35,9 +35,6 @@
                         <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                        <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
                         <a class="dropdown-item fs--1 d-flex align-items-center mb-0 cursor-pointer" data-bs-toggle="modal" data-bs-target="#logoutModal">
                             <i class="fa-solid fa-arrow-right-to-bracket text-primary-veris me-2 ti-sm"></i>
                             <span class="align-middle">Cerrar sesión</span>
@@ -131,17 +128,9 @@
 <script>
     
     $('#logout').click(function(){
-        // localStorage.clear();
-        for (let i = 0; i < localStorage.length; i++) {
-            let key = localStorage.key(i);
-            if (key.startsWith('cita-') || key.startsWith('persona-')) {
-                localStorage.removeItem(key);
-                i--; // Ajustar el índice después de eliminar un elemento
-            }
-        }
-
-        window.location.href = "{{-- route('logout') --}}";
+        window.location.href = "/logout";
     });
+    
 </script>
 <style>
     .fa-solid.fa-bell {

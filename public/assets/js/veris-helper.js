@@ -14,6 +14,19 @@ const _langDate = {
     }
 }
 
+// Configuración centralizada de reglas
+const requirements = {
+    firstLetter: /^[A-Z]/,   // Solo valida que el primer carácter sea A-Z
+    lowercase: /[a-z]/,
+    numbers: /[0-9]/,
+    length: /^.{8,}$/,
+    special: /[#$%*_\-+ =!]/
+};
+
+// Regex de seguridad: asegura que NO haya caracteres fuera de los permitidos
+const allowedChars = /^[0-9a-zA-Z#$%*_\-+ =!]+$/;
+const allowedCharsStr = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#$%*_-+=!";
+
 async function call(args){
     if(args.showLoader || args.showLoader == true){
         showLoader();
@@ -44,6 +57,12 @@ async function call(args){
         myHeaders.append("IdOrganizacion", _idOrganizacion);
         // console.log(myHeaders)
     }
+
+    if(args.codigoUsuarioPortal){
+        myHeaders.append("codigoUsuarioPortal", args.codigoUsuarioPortal);
+        myHeaders.append("tokenPortalUsuario", args.tokenPortalUsuario);
+    }
+
     requestOptions.headers = myHeaders;
     // console.log(args.endpoint, myHeaders)
     // console.log(Object.fromEntries(myHeaders.entries()));
@@ -109,6 +128,74 @@ async function call(args){
         });
 }
 
+async function callInformesBK(args) {
+    if (args.showLoader) {
+        showLoader();
+    }
+
+    let requestOptions = {
+        method: args.method,
+        redirect: 'follow',
+        headers: []
+    };
+    let myHeaders = new Headers();
+    if (args.bodyType === "json") {
+        myHeaders.append("Content-Type", "application/json");
+    }
+    if (["POST", "PUT", "DELETE"].includes(args.method) && args.data) {
+        requestOptions.body = args.data;
+    }
+
+    myHeaders.append("Accept-Language", "es");
+    
+    if(_token !== undefined && _token !== "" && !args.token){
+        myHeaders.append("Authorization","Bearer "+ _token);
+    }
+    
+    if(args.token){
+        myHeaders.append("Authorization","Bearer "+ args.token);
+        myHeaders.append("Application", _application);
+        myHeaders.append("IdOrganizacion", _idOrganizacion);
+        // console.log(myHeaders)
+    }
+
+    if(args.codigoUsuarioPortal){
+        myHeaders.append("codigoUsuarioPortal", args.codigoUsuarioPortal);
+        myHeaders.append("tokenPortalUsuario", args.tokenPortalUsuario);
+    }
+
+    requestOptions.headers = myHeaders;
+    console.log(myHeaders)
+    try {
+        const response = await fetch(args.endpoint, requestOptions);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        if (args.showLoader) {
+            hideLoader();
+        }
+
+        return blob;
+    } catch (error) {
+        if (args.showLoader) {
+            hideLoader();
+        }
+
+        // Construye un objeto de error para devolver información relevante
+        console.log(error);
+        let errorInfo = {
+            status: error.message.includes('HTTP error') ? parseInt(error.message.replace(/\D/g, '')) : 500, // Extrae el código de estado del mensaje de error, o asume 500 si no es específico
+            message: 'Ha ocurrido un problema con la comunicación al servicio requerido, inténtelo en unos momentos.'
+        };
+
+        
+
+        return errorInfo;
+    }
+}
+
 async function callInformes(args) {
     if (args.showLoader) {
         showLoader();
@@ -128,38 +215,72 @@ async function callInformes(args) {
     }
 
     myHeaders.append("Accept-Language", "es");
+    
     if(_token !== undefined && _token !== "" && !args.token){
         myHeaders.append("Authorization","Bearer "+ _token);
     }
+    
+    if(args.token){
+        myHeaders.append("Authorization","Bearer "+ args.token);
+        myHeaders.append("Application", _application);
+        myHeaders.append("IdOrganizacion", _idOrganizacion);
+    }
+
+    if(args.codigoUsuarioPortal){
+        myHeaders.append("codigoUsuarioPortal", args.codigoUsuarioPortal);
+        myHeaders.append("tokenPortalUsuario", args.tokenPortalUsuario);
+    }
+
     requestOptions.headers = myHeaders;
-    console.log(myHeaders)
+
     try {
         const response = await fetch(args.endpoint, requestOptions);
 
+        // --- SOLUCIÓN AQUÍ: Si la respuesta NO es exitosa, procesamos el JSON de error ---
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            let errorData;
+            try {
+                // Intentamos leer el JSON que envió el servidor con el error
+                errorData = await response.json();
+            } catch (jsonError) {
+                // Si no es un JSON válido, lanzamos un error genérico con el estatus
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            // Lanzamos un error personalizado llevando el mensaje del backend
+            throw {
+                isApiError: true,
+                status: response.status,
+                message: errorData.message || 'Ha ocurrido un problema con el servicio.'
+            };
         }
 
+        // Si todo está bien (status 200), procesamos el archivo binario
         const blob = await response.blob();
+        
         if (args.showLoader) {
             hideLoader();
         }
 
         return blob;
+
     } catch (error) {
         if (args.showLoader) {
             hideLoader();
         }
 
-        // Construye un objeto de error para devolver información relevante
-        let errorInfo = {
-            status: error.message.includes('HTTP error') ? parseInt(error.message.replace(/\D/g, '')) : 500, // Extrae el código de estado del mensaje de error, o asume 500 si no es específico
+        console.error("Error en callInformes:", error);
+
+        // Si es nuestro error estructurado del API, lo propagamos
+        if (error.isApiError) {
+            throw error;
+        }
+
+        // Si es un error de red o fetch (por ejemplo, sin conexión)
+        throw {
+            status: 500,
             message: 'Ha ocurrido un problema con la comunicación al servicio requerido, inténtelo en unos momentos.'
         };
-
-        
-
-        return errorInfo;
     }
 }
 

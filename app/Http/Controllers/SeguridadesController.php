@@ -13,13 +13,13 @@ class SeguridadesController extends Controller
 {
     /*Login*/
     public function login(){
-        $info = Session::get('userData');
+        $info = Session::get('user_external');
         return view('seguridades.login')->with('accessToken',$this->getTokenExternalDigitales());
     }
 
     public function loginExternal(Request $request){
         $data = $request->all();
-        $numeroIdentificacion = $data['numeroIdentificacion'];
+        $usuario = $data['numeroIdentificacion'];
         $password = $data['password'];
 
         $method = '/'.Veris::BASE_WAR.'/v1/comprobantes/portal_usuario/login';
@@ -29,72 +29,112 @@ class SeguridadesController extends Controller
         $response = Veris::call([
             'endpoint'  => Veris::BASE_URL.$method,
             'data'      => [
-                "numeroIdentificacion" => $numeroIdentificacion, 
-                "clave" => $data['password']
+                "usuario" => $usuario, 
+                "clave" => $password
             ],
             'token'     => $accessToken,
             'method'    => 'POST'
         ]);
 
-        echo Veris::BASE_URL.$method;
-        dd($response);
+        // echo Veris::BASE_URL.$method;
+        // dd($response);
         if($response->code == 200){
-            if (!is_null($response->data->codigoActivacion)) {
+            if ($response->data->estado != "A") {
+                Session::put('claveActual', $password);
                 Session::put('userDataTmp', $response->data);
                 return redirect('/configurar-clave');
             }else{
-                Session::put('userData', $response->data);
+                Session::put('user_external', $response->data);
                 return redirect('/');
             }
         }else{
             $message = $response->message;
         }
+
         if(isset($message)){
             session()->flash('alert', $message);
-            session()->flash('numeroIdentificacion', strtoupper($numeroIdentificacion));
+            session()->flash('numeroIdentificacion', strtoupper($usuario));
+            return redirect('/');
+        }
+    }
+
+    public function showActualizarAfterLogin(){
+        if (Session::has('userDataTmp')) {
+            $accessToken = $this->getTokenExternalFacturacion();
+            return view('seguridades.activar_cuenta')
+                ->with('codigoUsuario',Session::get('userDataTmp')->codigoUsuario)
+                ->with('numeroIdentificacion',Session::get('userDataTmp')->numeroIdentificacion)
+                ->with('claveActual',Session::get('claveActual'))
+                ->with('accessToken', $accessToken);
+        }else{
             return redirect('/login');
         }
     }
 
-    public function activarCuentaView(){
-        if (Session::has('userDataTmp')) {
-            return view('seguridades.activar_cuenta')
-                ->with('tipoIdentificacion',Session::get('userDataTmp')->codigoTipoIdentificacion)
-                ->with('numeroIdentificacion',Session::get('userDataTmp')->numeroIdentificacion)
-                ->with('mail',Session::get('userDataTmp')->mail)
-                ->with('accessToken',$this->getTokenExternalDigitales());;
-        }else{
-            return redirect('/login');
+    public function actualizarClaveTemporalAction(Request $request){
+        $data = $request->all();
+        $method = '/'.Ism::WAR_SEGURIDAD.'/v1/usuarios/activacion_cuenta';
+        $response = Ism::call([
+            'endpoint' => Ism::BASE_URL.$method,
+            //'token'    => Ism::getToken(),
+            'data'     => ['usuario' => Session::get('userTmp'), 'claveTemporal' => Session::get('passwordTmp'), 'claveNueva' => $data['nuevaClave'], 'codigoGrupoUsuario' => 3],
+            'method'   => 'POST'
+        ]);
+
+        if($response->code != 200){
+            session()->flash('mensaje', $response->message);
+            return Redirect::route('actualizarClaveTemporal');
         }
+
+        session()->flash('mensaje', "Contraseña actualizada exitosamente.");
+        return redirect()->route('login');
     }
 
     public function activarCuenta(Request $request){
         $data = $request->all();
-        $codigoTipoIdentificacion = Session::get('userDataTmp')->codigoTipoIdentificacion;
-        $numeroIdentificacion = Session::get('userDataTmp')->numeroIdentificacion;
+        // $codigoUsuario = Session::get('userDataTmp')->codigoUsuario;
+        // $numeroIdentificacion = Session::get('userDataTmp')->numeroIdentificacion;
         // dd($data['codigoActivacion']);
+        $accessToken = $this->getTokenExternalFacturacion();
 
-        $method = '/'.Veris::BASE_WAR.'/v1/seguridad/cuenta/activacion';
+        $method = '/'.Veris::BASE_WAR.'/v1/comprobantes/portal_usuario/cambiar_clave';
 
         $response = Veris::call([
             'endpoint' => Veris::BASE_URL.$method,
-            'data'     => ["tipoIdentificacion" => $codigoTipoIdentificacion, "numeroIdentificacion" => $numeroIdentificacion, "codigoActivacion" => $data['codigoActivacion'],"canalOrigenDigital" => Veris::CANAL_ORIGEN],
-            'method'   => 'POST'
+            'data'     => [
+                "usuario" => $data['usuario'], 
+                "claveActual" => $data['claveActual'], 
+                "claveNueva" => $data['nuevaClave'],
+                "repetirClave" => $data['confirmarClave']
+            ],
+            'method'   => 'POST',
+            'token'    => $accessToken,
+            'codigoUsuarioPortal' => $data['usuario']
         ]);
 
-        if($response->code == 200){
-            Session::put('userData', Session::get('userDataTmp'));
-            Session::forget('userDataTmp');
-            return redirect()->route('home');
-        }else{
-            $message = $response->message;
-            session()->flash('alert', $message);
-            return view('seguridades.activar_cuenta')
-                ->with('tipoIdentificacion',Session::get('userDataTmp')->codigoTipoIdentificacion)
-                ->with('numeroIdentificacion',Session::get('userDataTmp')->numeroIdentificacion)
-                ->with('mail',Session::get('userDataTmp')->mail)
-                ->with('accessToken',$this->getTokenExternalDigitales());;
+        // dd($response);
+
+        if($response->code != 200){
+            session()->flash('mensaje', $response->message);
+            return redirect('/configurar-clave');
         }
+
+        session()->flash('mensaje', "Contraseña actualizada exitosamente.");
+        return redirect()->route('login');
+
+        // if($response->code == 200){
+        //     Session::put('user_external', Session::get('userDataTmp'));
+        //     Session::forget('userDataTmp');
+        //     return redirect()->route('home');
+        // }else{
+        //     $message = $response->message;
+        //     session()->flash('alert', $message);
+        //     return view('seguridades.activar_cuenta')
+        //         ->with('tipoIdentificacion',Session::get('userDataTmp')->codigoTipoIdentificacion)
+        //         ->with('numeroIdentificacion',Session::get('userDataTmp')->numeroIdentificacion)
+        //         ->with('mail',Session::get('userDataTmp')->mail)
+        //         ->with('accessToken',$this->getTokenExternalDigitales());;
+        // }
     }
 
     public function registrarCuenta(){

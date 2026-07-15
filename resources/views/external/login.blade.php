@@ -5,28 +5,28 @@
 
 @section('content')
 <!-- Logo -->
-<div class="text-center mb-4">
+<div class="text-center mb-5">
     <img class="logo-login" src="../../assets/img/veris/logo-veris-2025.svg">
 </div>
 <!-- /Logo -->
 <form id="formAuthentication" class="mb-3" action="/login-external" method="POST">
     @csrf
-    @if (session()->has('mensaje'))
-        <div class="alert alert-warning">
-            {{ session('mensaje') }} 
-        </div>
-    @endif
-    @if($errors->has('csrf_token'))
-    <div class="alert alert-warning">
-        {{ $errors->first('csrf_token') }}
-    </div>
-    @endif
-    <div class="mb-3 mt-5">
+    <div class="my-3">
         <div class="alert alert-primary fs--3">
             <p class="mb-2">Estimado Cliente, usted podrá descargar su factura 24 horas después de su atención.</p>
             <p class="mb-0">El usuario y clave (si aún no lo ha cambiado en el sistema) se encuentran en la parte inferior de su comprobante.</p>
         </div>
     </div>
+    @if (session()->has('mensaje'))
+        <div class="alert alert-warning fs--3">
+            {{ session('mensaje') }} 
+        </div>
+    @endif
+    @if($errors->has('csrf_token'))
+        <div class="alert alert-warning">
+            {{ $errors->first('csrf_token') }}
+        </div>
+    @endif
     <div class="mb-3">
         <label for="numeroIdentificacion" class="form-label fw-medium">Usuario *</label>
         <input type="text"

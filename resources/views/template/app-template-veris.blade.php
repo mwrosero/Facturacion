@@ -43,6 +43,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/typeahead-js/typeahead.css') }}" />
+    <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/vendor/libs/toastr/toastr.css" />
     {{-- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}" /> --}}
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/swiper/swiper.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
@@ -63,6 +64,11 @@
         const app_ori = "APPWEB";
         const api_url = "{{ \App\Models\Veris::BASE_URL }}";
         const api_war = "{{ \App\Models\Veris::BASE_WAR }}";
+        const api_war_general = "{{ \App\Models\Veris::BASE_WAR_GENERAL }}";
+
+        const _application = "{{ \App\Models\Veris::APPLICATION }}";;
+        const _idOrganizacion = "{{ \App\Models\Veris::IDORGANIZACION }}";
+
         let _token = ""{{-- Session::get('userData')->tokenPush --}}
         let tipoFlujo = "";
         const url_site = "{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}";
@@ -352,6 +358,7 @@
     <script src="{{ asset('assets/vendor/libs/datatables-responsive/datatables.responsive.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.js') }}"></script>
+    <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/vendor/libs/toastr/toastr.js"></script>
 
     <!-- Main JS -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
@@ -566,6 +573,12 @@
             return valor;
         }
 
+        function logoutSystem(message){
+            showMessage('warning', message);
+            setTimeout(function(){
+                window.location.href = "/logout";
+            }, 2000);
+        }
 
         function inicializarDatePickers() {
             // Calcular el rango por defecto (Desde el 1 del mes actual hasta hoy)
@@ -578,7 +591,8 @@
                 maxDate: hoy, // Bloquea fechas futuras
                 defaultDate: [primerDiaMes, hoy], // Rango inicial establecido
                 dateFormat: "M j, Y", // Formato visual en pantalla: ej "jul. 1, 2026"
-                
+                showMonths: 1,            // Muestra 1 mes a la vez
+                monthSelectorType: "dropdown", // Transforma el mes y año en un <select> estándar
                 // Configuración de idioma en español con formato personalizado
                 locale: {
                     firstDayOfWeek: 1,
@@ -638,6 +652,55 @@
             }
         }
     </script>
+    <style>
+        .numInputWrapper {
+            margin-left: 5px;
+        }
+
+        /* 2. Forzar que el contenedor de las flechas sea visible y se posicione a la derecha */
+        .flatpickr-current-month .numInputWrapper span {
+            display: block !important;
+            opacity: 1 !important;
+            position: absolute !important;
+            right: 0 !important;
+            width: 16px !important;
+            height: 50% !important;
+            box-sizing: border-box !important;
+            cursor: pointer !important;
+            border: none !important;
+        }
+
+        /* 3. Re-dibujar los triángulos internos de las flechas (por si Bootstrap los borró) */
+        .flatpickr-current-month .numInputWrapper span:after {
+            content: "" !important;
+            display: block !important;
+            position: absolute !important;
+            left: 4px !important;
+            width: 0 !important;
+            height: 0 !important;
+            border-left: 4px solid transparent !important;
+            border-right: 4px solid transparent !important;
+        }
+
+        .flatpickr-current-month .numInputWrapper span.arrowUp:after {
+            top: 4px !important;
+            border-bottom: 5px solid #555 !important; /* Triángulo hacia arriba */
+        }
+
+        .flatpickr-current-month .numInputWrapper span.arrowDown:after {
+            top: 3px !important;
+            border-top: 5px solid #555 !important; /* Triángulo hacia abajo */
+        }
+
+        /* Cambiar de color al pasar el mouse por encima de las flechas */
+        .flatpickr-current-month .numInputWrapper span:hover {
+            background: rgba(0, 0, 0, 0.05) !important;
+        }
+
+        span.flatpickr-day.inRange {
+            font-weight: 700;
+        }
+    </style>    
     @stack('scripts')
 </body>
 

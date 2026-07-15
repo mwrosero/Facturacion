@@ -15,7 +15,7 @@ class Veris extends Model
     public const BASE_URL = 'https://api-phantomx.veris.com.ec';
     public const BASE_WAR = 'financiero';
     public const FACTURACION_WAR = 'seguridadtest';
-    public const FACTURACION_WAR_DESA = 'seguridad';
+    public const BASE_WAR_GENERAL = 'generaltest';
     public const BASE_WAR_AI = 'agents-ai';
     public const CANAL_ORIGEN = 'MVE_CMV';
     public const CANAL_ORIGEN_EXTERNAL = 'VER_CMV';
@@ -24,28 +24,15 @@ class Veris extends Model
     public const APPLICATION_FARMACIA = 'UEhBTlRPTVhfV0VC';
     public const IDORGANIZACION = 'adf4e264-cd20-4653-9a44-025b13050992';
     public const IDORGANIZACIONRESULTADOSLAB = '365509c8-9596-4506-a5b3-487782d5876e';
-    public const URL_KUSHKI = 'https://api-uat.kushkipagos.com';
-    public const KUSHKI_MERCHANT_ID = '10000003012872942409151942277385';
-    public const KUSHKI_PRIVATE_MERCHANT_ID = '10000003012852139010151942277385';
-    public const IS_KUSHKI_TEST_ENVIRONMENT = true;
-    public const ENVIRONMENT_NUVEI = "stg";
-    public const TEST_ENVIRONMENT_KUSHKI = true;
     public const AMPLITUDE = "1cbd8baed97a6c8abf6b8e398b77cf6f";
     public const BASICAUTHDIGITALES = 'd3NhcHBjZW50cmljbzpDQVM1Nzg5Yjg2TWRyNUMzbnRyMWMw';
     public const BASICAUTHFACTURACION = 'QkFDS0VORFBIQU5UT006UGhAbnQwbVQzJHQjMjAyNSE=';
-    public const BASICAUTHFACTURACIONDESARROLLO = 'YmFja2VuZHBoYW50b206QmFja1BAbnRoMG1QQHNzMjAyMQ==';
-    public const NEMONICO_FLUJO_PAGO = 'PRE_TRANSACCIONES';
-    public const NEMONICO_FARMACIA = 'FARMACIA_DOMICILIO';
-    public const NEMONICO_VUA = 'LIQUIDACION_VAP';
-    public const URL_EPI = 'http://ecstest.veris.com.ec/Verisrest/v1/formularioepi1';
-    public const BASICAUTHEPI = 'd3Nmb3JtdWxhcmlvZXBpMTpDQVM1Nzg5Yjg2TWRyNUYwcm11bGFyMTAzcGkxKg==';
-    public const CONTIENE_DESARROLLO = false;
-    public const API_KEY_GOOGLE_MAP = 'AIzaSyCvKhNY5DAACMCU8gAY1AbJiaqg3bTo2jc';
 
     //PROD 
     // public const BASE_URL = 'https://api.phantomx.com.ec';
     // public const BASE_WAR = 'digitales';
     // public const FACTURACION_WAR = 'seguridad';
+    // public const BASE_WAR_GENERAL = 'general';
     // public const BASE_WAR_AI = 'agents-ai';
     // public const CANAL_ORIGEN = 'MVE_CMV';
     // public const CANAL_ORIGEN_EXTERNAL = 'VER_CMV';
@@ -131,6 +118,10 @@ class Veris extends Model
             if( isset($config['token']) && !$tokenBearerSetted){
                 $header[] = 'Authorization: Bearer ' . $config['token'];
             }
+        }
+
+        if(isset($config['codigoUsuarioPortal'])){
+            $header[] = 'codigoUsuarioPortal: ' . $config['codigoUsuarioPortal'];
         }
 
         if( isset($config['basic']) ){
