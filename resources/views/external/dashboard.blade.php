@@ -11,7 +11,7 @@ Veris - Facturas
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <h5 class="ps-3 my-auto py-3 fs-20 fs-md-24">Portal de Facturas Electrónicas</h5>
+                    <h5 class="ps-3 my-auto py-3 fs-20 fs-md-24">Portal Facturas Electrónicas</h5>
                 </div>
             </div>
         </div>
