@@ -32,6 +32,8 @@ class CaptureSubdomain
             $subdomain = 'veris';
         }
 
+        $subdomain = 'veris';
+
         Session::forget('subdomain');
         Session::put('subdomain', $subdomain);
         // Session::put('subdomain', 'parami');
