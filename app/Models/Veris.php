@@ -124,6 +124,10 @@ class Veris extends Model
             $header[] = 'codigoUsuarioPortal: ' . $config['codigoUsuarioPortal'];
         }
 
+        if(isset($config['tokenPortalUsuario'])){
+            $header[] = 'tokenPortalUsuario: ' . $config['tokenPortalUsuario'];
+        }
+
         if( isset($config['basic']) ){
             $header[] = 'Authorization: Basic ' . $config['basic'];
             $header[] = 'Content-Type: application/json';

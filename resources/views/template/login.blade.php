@@ -43,7 +43,7 @@
         <link rel="stylesheet" href="../../../assets/vendor/css/pages/page-auth.css" />
         <link rel="stylesheet" href="../../../assets/css/demo.css" />
         <link rel="stylesheet" href="../../../assets/css/style.css" />
-
+        {{-- <link rel="stylesheet" href="{{ asset('assets/css/theme-veris-app.css?v=1.0.4')}}"> --}}
         @if(config('app.subdomain') == "parami")
         <link rel="stylesheet" href="{{ asset('assets/css/theme-parami-app.css?v=1.0.4')}}">
         @endif
@@ -89,7 +89,57 @@
     <body class="bg-fondo">
         <!-- Content -->
         @yield('back-button')
-        
+
+        @if (Session::has('user_external'))
+        <div class="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
+            <div class="layout-container">
+                <!-- Navbar -->
+                @include('template.navbar2')
+                <!-- / Navbar -->
+
+                <!-- Layout container -->
+                <div class="layout-page">
+
+                    <!-- Content wrapper -->
+                    <div class="content-wrapper">
+                        <div class="flex-grow-1 container-p-y pt-0" style="background-color: #e4e5e6;">
+                            <div class="d-flex justify-content-between align-items-center bg-white">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h5 class="ps-3 my-auto py-3 fs-20 fs-md-24">Actualizar Contraseña</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="container mt-3">
+                                <div class="row">
+                                    <div class="col-10 offset-1 col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+                                        <div class="card shadow-none">
+                                            <div class="card-body px-0 px-md-4">
+                                                @yield('content')
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- / Content -->
+                        </div>
+
+                        <!-- Footer -->
+                        @include('template.footer2')
+                        <!-- / Footer -->
+
+                        <div class="content-backdrop fade d-none"></div>
+                    </div>
+                    <!-- Content wrapper -->
+                </div>
+                <!-- / Layout page -->
+            </div>
+        </div>
+        @else        
         <div class="container-xxl">
             <div class="authentication-wrapper authentication-basic">
                 <div class="authentication-inner">
@@ -101,6 +151,7 @@
                 </div>
             </div>
         </div>
+        @endif
         @component('components.modal', ['id' => 'modalAlert', 'title' => 'Error', 'message' => session('alert')])
             <button type="button" class="btn btn-primary">Aceptar</button>
         @endcomponent
@@ -156,5 +207,11 @@
             });
         </script>
         @endif
+    <style>
+        .bg-navbar-theme-veris {
+            background-color: #296BEF !important;
+            color: #fff !important;
+        }
+    </style>    
 </body>
 </html>

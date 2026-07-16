@@ -4,15 +4,18 @@
 @endsection
 @section('content')
 <!-- Content Actualizar Clave -->
+@if (!Session::has('user_external'))
 <p class="fs-4 mb-1 pt-2 text-center bg-colortext fw-medium">Actualizar Contraseña</p>
 <p class="fs-10 mb-3 text-center bg-colortext">Por motivos de seguridad debes actualizar tu contraseña para activar tu cuenta.</p>
-
+@endif
 {{-- <form id="formAuthentication" class="mb-3" method="post" action="/actualizar-clave" onsubmit="return validarClave()"> --}}
 <form id="formAuthentication" class="mb-3" method="post" action="/actualizar-clave">
     @csrf
+    @if (!Session::has('user_external'))
     <input type="hidden" name="usuario" value="{{ $codigoUsuario }}">
     <input type="hidden" name="numeroIdentificacion" value="{{ $numeroIdentificacion }}">
     <input type="hidden" name="claveActual" value="{{ $claveActual }}">
+    @endif
     @if (session()->has('mensaje'))
         <div class="alert alert-warning">
         {{ session('mensaje') }}
@@ -32,11 +35,11 @@
         <div class="checklist-box p-2 my-2 rounded">
             <p class="fw-medium mb-2 bg-colortext">Su password debe contener al menos:</p>
             <ul class="checklist px-2">
-                <li id="firstLetter">Debe iniciar con una letra mayúscula</li>
-                {{-- <li id="uppercase">Incluir Mayúscula</li> --}}
+                {{-- <li id="firstLetter">Debe iniciar con una letra mayúscula</li> --}}
+                <li id="uppercase">Incluir Mayúscula</li>
                 <li id="lowercase">Incluir Minúscula</li>
                 <li id="numbers">Incluir Números</li>
-                <li id="length">Tamaño mínimo 8</li>
+                <li id="length">Tamaño exacto 10 caracteres</li>
                 <li id="special">Caracteres Especiales <b class="ms-1 text-dark">#$%*_-+=!</b></li>
             </ul>
         </div>
@@ -66,36 +69,32 @@
             let value = passwordInput.value;
             const allowedCharsStr = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#$%*_-+=!";
 
-            // 1. RESTRICCIÓN: Si hay algo escrito, el primer carácter DEBE ser Mayúscula
+            // 1. RESTRICCIÓN: No permitir escribir más de 10 caracteres
+            if (value.length > 10) {
+                passwordInput.value = value.substring(0, 10);
+                value = passwordInput.value; // Actualizamos la referencia de 'value'
+            }
+
+            // 2. FILTRADO de caracteres prohibidos (valida la tecla o carácter que se acaba de ingresar)
             if (value.length > 0) {
-                const firstChar = value.charAt(0);
-                if (!/[A-Z]/.test(firstChar)) {
-                    // Si el primero no es mayúscula, borramos todo y avisamos
-                    passwordInput.value = "";
-                    showMessage('warning', 'Atención', "La contraseña debe comenzar obligatoriamente con una letra mayúscula.");
-                    
-                    // Limpiamos todos los checks visualmente
-                    for (const key in requirements) {
-                        document.getElementById(key).classList.remove('valid');
-                    }
-                    return;
+                const lastChar = value.slice(-1);
+                if (!allowedCharsStr.includes(lastChar)) {
+                    passwordInput.value = value.slice(0, -1);
+                    value = passwordInput.value; // Actualizamos la referencia tras borrar
+                    showMessage('warning', 'Atención', `Caracter "${lastChar}" no permitido.`);
+                    return; 
                 }
             }
 
-            // 2. FILTRADO de caracteres prohibidos (el resto de la cadena)
-            const lastChar = value.slice(-1);
-            if (value.length > 0 && !allowedCharsStr.includes(lastChar)) {
-                passwordInput.value = value.slice(0, -1);
-                showMessage('warning', 'Atención', `Caracter "${lastChar}" no permitido.`);
-                return; 
-            }
-
-            // 3. Validación visual (se desmarcará al borrar, ya que evaluamos el valor actual)
+            // 3. Validación visual en tiempo real
             for (const key in requirements) {
                 const element = document.getElementById(key);
-                // Si el valor es vacío o no cumple, .toggle(..., false) quitará la clase
-                element.classList.toggle('valid', value.length > 0 && requirements[key].test(value));
+                if (element) {
+                    // Se marcará en verde solo si cumple la condición de su Regex
+                    element.classList.toggle('valid', value.length > 0 && requirements[key].test(value));
+                }
             }
+
         });
 
         const form = document.getElementById('formAuthentication');
@@ -107,10 +106,10 @@
             let hayError = false;
             let mensajeError = "";
 
-            if (nuevaClave.length < 8) {
+            if (nuevaClave.length !== 10) {
                 hayError = true;
-                mensajeError = "La nueva contraseña debe tener al menos 8 caracteres.";
-            }else if (nuevaClave !== confirmarClave) {
+                mensajeError = "La nueva contraseña debe tener exactamente 10 caracteres.";
+            } else if (nuevaClave !== confirmarClave) {
                 hayError = true;
                 mensajeError = "Las contraseñas no coinciden.";
             }else {

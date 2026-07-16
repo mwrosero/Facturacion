@@ -17,6 +17,74 @@ class SeguridadesController extends Controller
         return view('seguridades.login')->with('accessToken',$this->getTokenExternalDigitales());
     }
 
+    public function loginVeris(Request $request){
+        $data = $request->all();
+        $user = strtoupper($data['numeroIdentificacion']);
+        $password = $data['password'];
+
+
+        $method = '/'.Veris::FACTURACION_WAR.'/v1/autenticacion/login';
+        $res =  Http::withOptions([
+                    'verify' => false, // Desactivar verificación de certificados
+                ])->withHeaders([
+                    'Application' => Veris::APPLICATION_FARMACIA,
+                    'Authorization' => 'Basic '.base64_encode(strtoupper($user) .":". $password),
+                ])->post(Veris::BASE_URL.$method);
+        
+        $response = json_decode($res->body());
+
+        if($response->code == 200){
+            switch($response->data->estadoUsuario) {
+                case 'CONFIRMED':
+                    
+                    /*$method = '/'.Veris::FACTURACION_WAR.'/v1/usuarios/'.$response->data->secuenciaUsuario.'?tipoSucursal=TODOS';
+                    $dataRoles = Veris::call([
+                        'endpoint' => Veris::BASE_URL.$method,
+                        'method'   => 'GET',
+                        'application' => Veris::APPLICATION_FARMACIA,
+                        'token'    => $response->data->idToken,
+                        'data'     => $data
+                    ]);
+                    $roles = collect($dataRoles->data->roles);
+
+                    $existe = $roles->contains(function ($item) {
+                        return $item->codigoRol == 1121 && trim($item->nombreRol) == 'GUIA DE DESPACHO USUARIO2';
+                    });*/
+                    $existe = true;
+                    // dump($existe);
+
+                    if ($existe){
+                        Session::put('user_veris', $response->data);
+                        Session::put('accessToken', $response->data->idToken);
+                        // dd($response->data->secuenciaUsuario);
+                        // Session::put('roles', $dataRoles->data);
+                        return redirect('/empresarial');
+                    }else{
+                        $message = "Usuario no dispone del ROL requerido.";
+                    }
+                break;
+                case 'FORCE_CHANGE_PASSWORD':
+                    $message = "Usuario nuevo que ingresa una clave temporal";
+                break;
+                case 'CHANGE_PASSWORD':
+                    $message = "Usuario debe cambiar su clave porque ha pasado 'x' tiempo desde el último cambio";
+                break;
+                case 'RESET_REQUIRED':
+                    $message = "7702057701963";
+                break;
+            }
+        }else{
+            $message = $response->message;
+        }
+
+        if(isset($message)){
+            session()->flash('mensaje', $message);
+            session()->flash('user', strtoupper($user));
+            return redirect('/external/farmacia/login')
+                    ->with('accessToken','');
+        }
+    }
+
     public function loginExternal(Request $request){
         $data = $request->all();
         $usuario = $data['numeroIdentificacion'];
@@ -58,16 +126,23 @@ class SeguridadesController extends Controller
         }
     }
 
-    public function showActualizarAfterLogin(){
+    public function showActualizarClave(){
         if (Session::has('userDataTmp')) {
             $accessToken = $this->getTokenExternalFacturacion();
-            return view('seguridades.activar_cuenta')
+            return view('seguridades.formulario_cambiar_clave')
                 ->with('codigoUsuario',Session::get('userDataTmp')->codigoUsuario)
                 ->with('numeroIdentificacion',Session::get('userDataTmp')->numeroIdentificacion)
                 ->with('claveActual',Session::get('claveActual'))
                 ->with('accessToken', $accessToken);
+        }else if (Session::has('user_external')) {
+            // Si esta logueado
+            $accessToken = $this->getTokenExternalFacturacion();
+            return view('seguridades.formulario_cambiar_clave')
+                ->with('codigoUsuario',Session::get('user_external')->codigoUsuario)
+                ->with('numeroIdentificacion',Session::get('user_external')->numeroIdentificacion)
+                ->with('accessToken', $accessToken);
         }else{
-            return redirect('/login');
+            return redirect('/');
         }
     }
 
@@ -90,51 +165,60 @@ class SeguridadesController extends Controller
         return redirect()->route('login');
     }
 
-    public function activarCuenta(Request $request){
+    public function actualizarClave(Request $request){
         $data = $request->all();
         // $codigoUsuario = Session::get('userDataTmp')->codigoUsuario;
         // $numeroIdentificacion = Session::get('userDataTmp')->numeroIdentificacion;
-        // dd($data['codigoActivacion']);
+        // dd($data);
         $accessToken = $this->getTokenExternalFacturacion();
 
         $method = '/'.Veris::BASE_WAR.'/v1/comprobantes/portal_usuario/cambiar_clave';
 
-        $response = Veris::call([
-            'endpoint' => Veris::BASE_URL.$method,
-            'data'     => [
-                "usuario" => $data['usuario'], 
-                "claveActual" => $data['claveActual'], 
-                "claveNueva" => $data['nuevaClave'],
-                "repetirClave" => $data['confirmarClave']
-            ],
-            'method'   => 'POST',
-            'token'    => $accessToken,
-            'codigoUsuarioPortal' => $data['usuario']
-        ]);
-
-        // dd($response);
+        if(Session::has('user_external')){
+            $response = Veris::call([
+                'endpoint' => Veris::BASE_URL.$method,
+                'data'     => [
+                    // "usuario" => $data['usuario'], 
+                    // "claveActual" => $data['claveActual'], 
+                    "claveNueva" => $data['nuevaClave'],
+                    "repetirClave" => $data['confirmarClave']
+                ],
+                'method'   => 'POST',
+                'token'    => $accessToken,
+                'tokenPortalUsuario' => Session::get('user_external')->tokenPortal,
+                'codigoUsuarioPortal' => Session::get('user_external')->codigoUsuario
+            ]);
+        }else{
+            $response = Veris::call([
+                'endpoint' => Veris::BASE_URL.$method,
+                'data'     => [
+                    "usuario" => $data['usuario'], 
+                    "claveActual" => $data['claveActual'], 
+                    "claveNueva" => $data['nuevaClave'],
+                    "repetirClave" => $data['confirmarClave']
+                ],
+                'method'   => 'POST',
+                'token'    => $accessToken,
+                'codigoUsuarioPortal' => $data['usuario']
+            ]);
+        }
 
         if($response->code != 200){
             session()->flash('mensaje', $response->message);
-            return redirect('/configurar-clave');
+            if (Session::has('user_external')){
+                return redirect('/actualizar-clave');
+            }else{
+                return redirect('/configurar-clave');
+            }
         }
 
         session()->flash('mensaje', "Contraseña actualizada exitosamente.");
-        return redirect()->route('login');
+        if (Session::has('user_external')){
+            return redirect('/configurar-clave');
+        }else{
+            return redirect()->route('login');
+        }
 
-        // if($response->code == 200){
-        //     Session::put('user_external', Session::get('userDataTmp'));
-        //     Session::forget('userDataTmp');
-        //     return redirect()->route('home');
-        // }else{
-        //     $message = $response->message;
-        //     session()->flash('alert', $message);
-        //     return view('seguridades.activar_cuenta')
-        //         ->with('tipoIdentificacion',Session::get('userDataTmp')->codigoTipoIdentificacion)
-        //         ->with('numeroIdentificacion',Session::get('userDataTmp')->numeroIdentificacion)
-        //         ->with('mail',Session::get('userDataTmp')->mail)
-        //         ->with('accessToken',$this->getTokenExternalDigitales());;
-        // }
     }
 
     public function registrarCuenta(){
@@ -143,19 +227,33 @@ class SeguridadesController extends Controller
     }
 
     /*Formulario de Olvide clave*/
-    public function olvideClave(){
-        return view('seguridades.olvide_clave')
-                ->with('accessToken',$this->getTokenExternalDigitales());
+    public function showRecuperar(){
+        return view('seguridades.recuperar_clave');
     }
 
-    /*public function recuperarClave(Request $request){
-        return view('seguridades.reestablecer_clave');
-    }*/
+    public function sendRecuperar(Request $request){
+        $data = $request->all();
+        $accessToken = $this->getTokenExternalFacturacion();
 
-    public function reestablecerClave($params){
-        return view('seguridades.reestablecer_clave')
-            ->with('params',$params)
-            ->with('accessToken',$this->getTokenExternalDigitales());;
+        $method = '/'.Veris::BASE_WAR.'/v1/comprobantes/portal_usuario/recuperar_clave';
+        $response = Veris::call([
+            'endpoint' => Veris::BASE_URL.$method,
+            'data'     => [
+                "numeroIdentificacion" => $data['numeroIdentificacion'],
+            ],
+            'method'   => 'POST',
+            'token'    => $accessToken
+        ]);
+        // dd($response);
+        if($response->code != 200){
+            session()->flash('mensaje', $response->message);
+            session()->flash('numeroIdentificacion', $data['numeroIdentificacion']);
+            return redirect('/recuperar-clave');
+        }
+
+        session()->flash('mensaje', $response->message);
+        return redirect('/empresarial');
+
     }
 
     /*Logout*/

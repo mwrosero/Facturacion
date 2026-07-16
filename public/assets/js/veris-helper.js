@@ -16,10 +16,11 @@ const _langDate = {
 
 // Configuración centralizada de reglas
 const requirements = {
-    firstLetter: /^[A-Z]/,   // Solo valida que el primer carácter sea A-Z
+    // firstLetter: /^[A-Z]/,
+    uppercase: /[A-Z]/,
     lowercase: /[a-z]/,
     numbers: /[0-9]/,
-    length: /^.{8,}$/,
+    length: /^.{10,}$/,
     special: /[#$%*_\-+ =!]/
 };
 
@@ -49,6 +50,8 @@ async function call(args){
 
     if(_token !== undefined && _token !== "" && !args.token){
         myHeaders.append("Authorization","Bearer "+ _token);
+        myHeaders.append("Application", _application);
+        myHeaders.append("IdOrganizacion", _idOrganizacion);
     }
     
     if(args.token){

@@ -22,10 +22,22 @@ class FacturaController extends Controller
 
     public function externalDashboard(){
         $user = Session::get('user_external');
+        // dd($user);
         $seguridadesController = app(SeguridadesController::class);
         return view('external.dashboard')
             ->with('accessToken',$seguridadesController->getTokenExternalFacturacion())
             ->with('codigoUsuarioPortal',$user->codigoUsuario)
             ->with('tokenPortalUsuario',$user->tokenPortal);
     }
+
+    public function verisDashboard(){
+        $user = Session::get('user_veris');
+        // dd($user);
+        $seguridadesController = app(SeguridadesController::class);
+        return view('external.dashboard')
+            ->with('accessToken',$seguridadesController->getTokenExternalFacturacion())
+            ->with('codigoUsuarioPortal',$user->secuenciaUsuario)
+            ->with('tokenPortalUsuario',$user->idToken);
+    }
+    
 }

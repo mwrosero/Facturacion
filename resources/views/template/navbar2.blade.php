@@ -10,7 +10,7 @@
 
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
         <!-- Logo veris -->
-        <a class="navbar-brand mx-auto" href="#">
+        <a class="navbar-brand mx-auto" href="/">
             {{-- <img src="{{ asset('assets/img/veris/logo-veris.svg') }}" class="ml-lg-10" alt="veris" width="84"> --}}
             <img src="{{ asset('assets/img/'.config('app.subdomain').'/logo-'.config('app.subdomain').'.svg') }}" class="ml-lg-12" alt="veris" width="84">
         </a>
@@ -21,12 +21,24 @@
                     <div class="avatar-sm avatar-online">
                         <img src="{{ asset('assets/img/avatars/avatar.svg') }}" alt class="h-auto rounded-circle" />
                     </div>
-                    <span class="fs--1 ms-2 d-none d-lg-block">{{-- Session::get('userData')->nombre --}}mwrosero</span>
+                    <span class="fs--1 ms-2 d-none d-lg-block">
+                        @if (Session::has('user_external'))
+                            {{ Session::get('user_external')->razonSocial }}
+                        @endif
+                    </span>
                     <i class="fa-solid fa-angle-down d-none d-lg-block ms-2"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end rounded-3 mt-2 py-1">
+                    @if (Session::has('user_external'))
+                    <li class="py-3">
+                        <span class="fs--1 ms-4 fw-bold">
+                        @if (Session::has('user_external'))
+                            {{ Session::get('user_external')->razonSocial }}
+                        @endif
+                        </span>
+                    </li>
                     <li>
-                        <a class="dropdown-item fs--1 d-flex align-items-center mb-0" href="{{-- route('cuenta.miCuenta') --}}">
+                        <a class="dropdown-item fs--1 d-flex align-items-center mb-0" href="/actualizar-clave">
                             <i class="fa-solid fa-lock text-primary-veris me-2 ti-sm"></i>
                             <span class="align-middle">Cambiar clave</span>
                         </a>
@@ -34,6 +46,7 @@
                     <li>
                         <div class="dropdown-divider"></div>
                     </li>
+                    @endif
                     <li>
                         <a class="dropdown-item fs--1 d-flex align-items-center mb-0 cursor-pointer" data-bs-toggle="modal" data-bs-target="#logoutModal">
                             <i class="fa-solid fa-arrow-right-to-bracket text-primary-veris me-2 ti-sm"></i>

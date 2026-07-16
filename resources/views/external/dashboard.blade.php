@@ -72,6 +72,16 @@ Veris - Facturas
                                                 <option value="">Todas</option>
                                             </select>
                                         </div>
+                                        <div class="col-12 col-sm-6 col-md-4">
+                                            <label for="estado" class="form-label">Estado</label>
+                                            <select id="estado" name="estado" class="form-select select2 w-100" data-style="btn-default">
+                                                <option value="">Todos</option>
+                                                <option value="A">Autorizados</option>
+                                                <option value="N">No Autorizados</option>
+                                                <option value="R">Recibidos</option>
+                                                <option value="D">Devueltos</option>
+                                            </select>
+                                        </div>
                                         @endif
                                         <div class="col-10 col-sm-5 col-md-3">
                                             <button style="height: 37.6px;" class="btn bg-veris-ai w-100 mt-0 mt-sm-4 text-white" title="Buscar comprobantes" id="btn-buscar">Buscar</button>
@@ -337,7 +347,7 @@ Veris - Facturas
         let url_param_add = ``;
         @if (!Session::has('user_external'))
             let sucursal = $('#sucursal option:selected').val();
-            if(estado == "T"){
+            if(sucursal == "T"){
                 url_param_add += `&codigoSucursal=${sucursal}`;
             }
 
@@ -359,7 +369,7 @@ Veris - Facturas
         args["tokenPortalUsuario"] = "{{ $tokenPortalUsuario }}";
         args["token"] = "{{ $accessToken }}";
         @else
-        _token = "{{ $accessToken }}";
+        _token = "{{ Session::get('accessToken') }}";
         @endif
         args["showLoader"] = true;
         const data = await call(args);

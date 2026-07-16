@@ -15,6 +15,9 @@ Route::get('/', function () {
     if (session()->has('user_external')) {
         return redirect('/dashboard');
     }
+    if (session()->has('user_veris')) {
+        return redirect('/empresarial/dashboard');
+    }
     return view('external.login');
 })->name('login');
 
@@ -22,9 +25,8 @@ Route::get('/', function () {
 Route::post('/login-external', [SeguridadesController::class, 'loginExternal']);
 Route::get('/recuperar-clave', [SeguridadesController::class, 'showRecuperar']);
 Route::post('/recuperar-clave', [SeguridadesController::class, 'sendRecuperar']); // Acción de enviar correo/API
-Route::get('/configurar-clave', [SeguridadesController::class, 'showActualizarAfterLogin']);
-Route::get('/actualizar-clave', [SeguridadesController::class, 'showActualizar']);
-Route::post('/actualizar-clave', [SeguridadesController::class, 'activarCuenta']);
+Route::get('/configurar-clave', [SeguridadesController::class, 'showActualizarClave']);
+Route::post('/actualizar-clave', [SeguridadesController::class, 'actualizarClave']);
 Route::get('/logout', [SeguridadesController::class, 'logout']);
 
 // Route::get('/documentos', [FacturaController::class, 'showDocumentos']);
@@ -33,7 +35,7 @@ Route::get('/logout', [SeguridadesController::class, 'logout']);
 Route::middleware(['auth.external'])->group(function () {
     Route::get('/dashboard', [FacturaController::class, 'externalDashboard']);
     Route::post('/logout-external', [SeguridadesController::class, 'logoutExternal']);
-    
+    Route::get('/actualizar-clave', [SeguridadesController::class, 'showActualizarClave']);
     // Aquí irían más rutas de facturas para externos si fueran necesarias, ej:
     // Route::get('/facturas/ver/{id}', [FacturaController::class, 'showExternal']);
 });

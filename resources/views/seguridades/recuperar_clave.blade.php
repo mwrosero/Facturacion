@@ -1,20 +1,29 @@
 @extends('template.login')
 @section('title')
-    Veris - Facturas Electrónicas
+    Veris - Recuperar Clave
 @endsection
-
+@section('back-button')
+<div style="height: 40px; background-color: #F3F4F5; display: flex; align-items: center;">
+    <a href="{{ route('login') }}" class="text-decoration-none">
+        <div class="d-flex align-items-center justify-content-center" style="width: 87px; margin-left: 16px;">
+            <img src="../../assets/img/svg/atras.svg" class="cursor-pointer prev-image" alt="Atrás">
+            <label class="fw-medium" style="font-family: 'Gotham Rounded'; font-size: 16px;">Atrás</label>
+        </div>
+    </a>
+</div>
+@endsection
 @section('content')
 <!-- Logo -->
 <div class="text-center mb-5">
     <img class="logo-login" src="../../assets/img/veris/logo-veris-2025.svg">
 </div>
 <!-- /Logo -->
-<form id="formAuthentication" class="mb-3" action="/login-external" method="POST">
+<form id="formAuthentication" class="mb-3" action="/recuperar-clave" method="POST">
     @csrf
     <div class="my-3">
         <div class="alert alert-primary fs--3">
-            <p class="mb-2">Estimado Cliente, podrás descargar tu factura 24 horas después de tu atención.</p>
-            <p class="mb-0">El usuario y clave (si aún no lo has cambiado en el sistema) se encuentran en la parte inferior de tu comprobante.</p>
+            <p class="mb-2">Estimado Cliente, ingresa tu número de identificación.</p>
+            <p class="mb-0">Recibirás una clave temporal en tu correo electrónico para poder acceder.</p>
         </div>
     </div>
     @if (session()->has('mensaje'))
@@ -35,51 +44,21 @@
             name="numeroIdentificacion"
             oninput="limitarCaracteres(this, 13)"
             {{-- onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" --}}
-            placeholder="Ingresa tu usuario"
+            placeholder="Ingresa tu número de identificación"
             @if (session()->has('numeroIdentificacion'))
             value="{{ session('numeroIdentificacion') }}"
             @endif
             autofocus />
     </div>
-    <div class="mb-3 form-password-toggle">
-        <div class="d-flex justify-content-between">
-            <label class="form-label fw-medium" for="password">Contraseña *</label>
-        </div>
-        <div class="input-group input-group-merge">
-            <input type="password"
-            id="password"
-            class="form-control fs--1 p-3"
-            name="password"
-            placeholder="Ingresa tu contraseña"
-            aria-describedby="password"/>
-            <span id="togglePassword" class="input-group-text cursor-pointer"
-            ><i class="ti ti-eye-off"></i></span>
-        </div>
-    </div>
-    <div class="mb-5 text-left">
-        <a class="txt-veris fs-12" href="/recuperar-clave"> Olvidé mi contraseña</a>
-    </div>
     <div class="mt-4 mb-3">
-        <button class="btn d-grid w-100 btn-primary-veris fs--18 line-height-24 fw-medium px-4 py-3 rounded" id="btnLogin" type="submit">{{ __('Iniciar sesión')}}</button>
+        <button class="btn d-grid w-100 btn-primary-veris fs--18 line-height-24 fw-medium px-4 py-3 rounded" id="btnRecuperar" type="submit">{{ __('Enviar')}}</button>
     </div>
 </form>
 <script>
-    const passwordInput = document.getElementById('password');
-    const togglePassword = document.getElementById('togglePassword');
-
-    togglePassword.addEventListener('click', function() {
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            togglePassword.innerHTML = '<i class="ti ti-eye"></i>';
-        } else {
-            passwordInput.type = 'password';
-            togglePassword.innerHTML = '<i class="ti ti-eye-off"></i>';
-        }
-    });
 
     document.addEventListener("DOMContentLoaded", function() {
         var form = document.getElementById("formAuthentication");
-        var submitButton = document.getElementById("btnLogin");
+        var submitButton = document.getElementById("btnRecuperar");
 
         form.addEventListener("submit", function(event) {
             // Realiza tu validación aquí
@@ -94,10 +73,6 @@
             if(getInput('numeroIdentificacion') == ""){
                 errors = true;
                 msg += `<li class="ms-0">Campo usuario es requerido</li>`;
-            }
-            if(getInput('password') == ""){
-                errors = true;
-                msg += `<li class="ms-0">Campo contraseña es requerido</li>`;
             }
             msg += `</ul>`;
             if(errors){
