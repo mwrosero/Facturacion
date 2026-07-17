@@ -145,31 +145,32 @@ Veris - Facturas
     </section>
 </div>
 <div class="modal fade" id="modalPDF" tabindex="-1" aria-labelledby="modalPDFLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered"> <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title mb-2" id="modalPDFLabel">Visualizador de Documento</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-0" style="height: 75vh;">
-            <div id="contenedorPDF" class="w-100 h-100">
-                {{-- <iframe class="w-100 h-100" src="assets/034-100-001003623.pdf#toolbar=0&navpanes=0&statusbar=0" frameborder="0"></iframe> --}}
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mb-2" id="modalPDFLabel">Visualizador de Documento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0" style="height: 75vh;">
+                <div id="contenedorPDF" class="w-100 h-100">
+                    {{-- <iframe class="w-100 h-100" src="assets/034-100-001003623.pdf#toolbar=0&navpanes=0&statusbar=0" frameborder="0"></iframe> --}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary-veris text-veris-ai" data-bs-dismiss="modal">Cerrar</button>
+                <a id="btnDescargarPDF" href="#" download class="btn bg-veris-ai text-white">
+                    <i class="bi bi-download me-2"></i> Descargar PDF
+                </a>
             </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-outline-primary-veris text-veris-ai" data-bs-dismiss="modal">Cerrar</button>
-            <a id="btnDescargarPDF" href="#" download class="btn bg-veris-ai text-white">
-                <i class="bi bi-download me-2"></i> Descargar PDF
-            </a>
-        </div>
     </div>
-</div>
 </div>
 @endsection
 @push('scripts')
 
 <script>
     let page = 1;
-    let perPage = 5;
+    let perPage = 10;
     document.addEventListener("DOMContentLoaded", async function () {
         inicializarDatePickers();
 
@@ -193,6 +194,21 @@ Veris - Facturas
             await cargarDocumento(comprobante, type);
         });
 
+        $('#modalPDF').on('hidden.bs.modal', function () {
+            // Obtenemos el enlace de descarga actual
+            const $btnDescargar = $('#btnDescargarPDF');
+            const pdfUrl = $btnDescargar.attr('href');
+
+            // Si existe una URL de tipo blob, la liberamos
+            if (pdfUrl && pdfUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(pdfUrl);
+            }
+
+            // Limpiamos el iframe y reseteamos el botón para el siguiente documento
+            $('#contenedorPDF').empty();
+            $btnDescargar.attr('href', '#').removeAttr('download');
+        });
+
     })
 
     async function cargarDocumento(comprobante, type){
@@ -204,47 +220,48 @@ Veris - Facturas
         args["tokenPortalUsuario"] = "{{ $tokenPortalUsuario }}";
         args["token"] = "{{ $accessToken }}";
         @else
-        _token = "{{ $accessToken }}";
+        args["token"] = "{{ $accessToken }}";
         @endif
         args["showLoader"] = true;
-        console.log('arsgs', args["endpoint"]);
+        
+        console.log('args', args["endpoint"]);
         try {
             const blob = await callInformes(args);
             const pdfUrl = URL.createObjectURL(blob);
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const nombreArchivo = `${comprobante.nombreTipoComprobante}-${comprobante.numeroComprobante}.${type.toLowerCase()}`;
 
             if (isMobile || type == "XML") {
-                
                 const link = document.createElement('a');
                 link.href = pdfUrl;
-                link.download = `${nombreTipoComprobante}.${type.toLowerCase()}`; // Nombre del archivo descargado
+                link.download = nombreArchivo;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 
-
-                // En móviles dejamos un margen de tiempo mayor (15s) para liberar la memoria,
-                // ya que abrir pestañas nuevas o procesar descargas en background puede tomar un momento.
+                // En móviles liberamos después de un tiempo prudencial
                 setTimeout(() => {
                     URL.revokeObjectURL(pdfUrl);
                 }, 15000);
-            }else{
-
+            } else {
+                // 1. Creamos el iframe ocupando el 100% del contenedor del modal
                 const $iframe = $('<iframe>', {
                     src: pdfUrl,
                     css: {
                         'width': '100%',
-                        'height': '500px',
+                        'height': '100%', // Cambiado a 100% para que use el alto del contenedor modal-body
                         'border': 'none'
                     }
                 });
 
                 $('#contenedorPDF').html($iframe);
 
-                setTimeout(() => {
-                    URL.revokeObjectURL(pdfUrl);
-                }, 5000);
+                // 2. Configuramos el botón de descarga con la URL del Blob y el nombre correcto
+                const $btnDescargar = $('#btnDescargarPDF');
+                $btnDescargar.attr('href', pdfUrl);
+                $btnDescargar.attr('download', nombreArchivo);
 
+                // 3. Abrimos el modal
                 $('#modalPDF').modal('show');
             }
 
@@ -402,7 +419,7 @@ Veris - Facturas
                 @if (!Session::has('user_external'))
                     td_interno += `<td>${value.numeroIdentificacion}</td>
                         <td>${value.estadoMensaje}</td>
-                        <td>${value.sucursal}</td>`;
+                        <td>${value.nombreSucursal}</td>`;
                 @endif
                 elem += `<tr>
                     <td>${value.numeroComprobante}</td>

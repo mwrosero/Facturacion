@@ -73,6 +73,7 @@ class SeguridadesController extends Controller
                     $message = "7702057701963";
                 break;
             }
+            $message = $message . ' - Esto debe realizarlo en PhantomX.';
         }else{
             $message = $response->message;
         }
@@ -90,10 +91,10 @@ class SeguridadesController extends Controller
         $usuario = $data['numeroIdentificacion'];
         $password = $data['password'];
 
-        $method = '/'.Veris::BASE_WAR.'/v1/comprobantes/portal_usuario/login';
-        
         $accessToken = $this->getTokenExternalFacturacion();
-
+        
+        $method = '/'.Veris::BASE_WAR.'/v1/comprobantes/portal_usuario/login';
+        // dump($accessToken);
         $response = Veris::call([
             'endpoint'  => Veris::BASE_URL.$method,
             'data'      => [
@@ -252,7 +253,7 @@ class SeguridadesController extends Controller
         }
 
         session()->flash('mensaje', $response->message);
-        return redirect('/empresarial');
+        return redirect('/');
 
     }
 
@@ -260,8 +261,10 @@ class SeguridadesController extends Controller
     public function logout(){
         //dd(0);
         // Session::forget('user');
+        $type = (Session::has('user_external')) ? '/' : '/empresarial';
         Session::flush();
-        return redirect()->route('login');
+        // return redirect()->route('login');
+        return redirect($type);
     }
 
     public function getTokenExternalDigitales(){

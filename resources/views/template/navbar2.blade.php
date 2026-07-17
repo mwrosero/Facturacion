@@ -24,13 +24,15 @@
                     <span class="fs--1 ms-2 d-none d-lg-block">
                         @if (Session::has('user_external'))
                             {{ Session::get('user_external')->razonSocial }}
+                        @else
+                            {{ Session::get('user_veris')->codigoUsuario }}
                         @endif
                     </span>
                     <i class="fa-solid fa-angle-down d-none d-lg-block ms-2"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end rounded-3 mt-2 py-1">
                     @if (Session::has('user_external'))
-                    <li class="py-3">
+                    <li class="py-3 d-block d-lg-none">
                         <span class="fs--1 ms-4 fw-bold">
                         @if (Session::has('user_external'))
                             {{ Session::get('user_external')->razonSocial }}

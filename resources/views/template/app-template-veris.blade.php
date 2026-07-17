@@ -65,8 +65,11 @@
         const api_url = "{{ \App\Models\Veris::BASE_URL }}";
         const api_war = "{{ \App\Models\Veris::BASE_WAR }}";
         const api_war_general = "{{ \App\Models\Veris::BASE_WAR_GENERAL }}";
-
+        @if (Session::has('user_external'))
         const _application = "{{ \App\Models\Veris::APPLICATION }}";;
+        @else
+        const _application = "{{ \App\Models\Veris::APPLICATION_FARMACIA }}";;
+        @endif
         const _idOrganizacion = "{{ \App\Models\Veris::IDORGANIZACION }}";
 
         let _token = ""{{-- Session::get('userData')->tokenPush --}}
@@ -581,6 +584,7 @@
         }
 
         function inicializarDatePickers() {
+            @if (Session::has('user_external'))
             // Calcular el rango por defecto (Desde el 1 del mes actual hasta hoy)
             const hoy = new Date();
             const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
@@ -614,6 +618,67 @@
                 }
             });
 
+            @else
+            // Calcular el rango por defecto (Desde el 1 del mes actual hasta hoy)
+            const hoy = new Date();
+            const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+
+            // Inicializar Flatpickr guardándolo en la variable global
+            miPicker = flatpickr("#fecha", {
+                mode: "range",
+                maxDate: hoy, // Bloquea fechas futuras al inicio
+                defaultDate: [primerDiaMes, hoy], // Rango inicial establecido
+                dateFormat: "M j, Y", // Formato visual en pantalla
+                showMonths: 1,            // Muestra 1 mes a la vez
+                monthSelectorType: "dropdown", 
+                locale: {
+                    firstDayOfWeek: 1,
+                    rangeSeparator: " - ", 
+                    weekdays: {
+                        shorthand: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+                        longhand: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
+                    },
+                    months: {
+                        shorthand: ["ene.", "feb.", "mar.", "abr.", "may.", "jun.", "jul.", "ago.", "sep.", "oct.", "nov.", "dic."],
+                        longhand: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+                    }
+                },
+                onChange: function(selectedDates, dateStr, instance) {
+                    // AJUSTE PARA RANGO MÁXIMO DE 31 DÍAS:
+                    if (selectedDates.length === 1) {
+                        const fechaInicio = selectedDates[0];
+                        
+                        // Calculamos el límite mínimo y máximo alrededor de la fecha seleccionada
+                        const minPermitido = new Date(fechaInicio);
+                        minPermitido.setDate(fechaInicio.getDate() - 30); // 30 días hacia atrás
+
+                        const maxCalculado = new Date(fechaInicio);
+                        maxCalculado.setDate(fechaInicio.getDate() + 30); // 30 días hacia adelante (31 días en total contando el día de inicio)
+
+                        // No nos podemos pasar del día de hoy en el futuro
+                        const maxPermitido = maxCalculado > hoy ? hoy : maxCalculado;
+
+                        // Aplicamos los límites temporales
+                        instance.set("minDate", minPermitido);
+                        instance.set("maxDate", maxPermitido);
+                    } else {
+                        // Si ya seleccionó el rango completo (2 fechas) o lo limpió, 
+                        // restablecemos el comportamiento original
+                        instance.set("minDate", null);
+                        instance.set("maxDate", hoy);
+                    }
+
+                    if (selectedDates.length === 2) {
+                        console.log("Cambio detectado en pantalla: ", dateStr);
+                    }
+                },
+                // Restaurar los límites si el usuario cierra el selector sin completar la selección de 2 fechas
+                onClose: function(selectedDates, dateStr, instance) {
+                    instance.set("minDate", null);
+                    instance.set("maxDate", hoy);
+                }
+            });
+            @endif
             // Deshabilitar autocompletado
             $("#fecha").attr("autocomplete", "off");
         }
