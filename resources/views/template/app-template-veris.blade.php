@@ -70,7 +70,7 @@
         @if (Session::has('user_external'))
         const _application = "{{ \App\Models\Veris::APPLICATION }}";;
         @else
-        const _application = "{{ \App\Models\Veris::APPLICATION_FARMACIA }}";;
+        const _application = "{{ \App\Models\Veris::APPLICATION_PHX }}";;
         @endif
         const _idOrganizacion = "{{ \App\Models\Veris::IDORGANIZACION }}";
 

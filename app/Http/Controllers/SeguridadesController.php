@@ -27,21 +27,26 @@ class SeguridadesController extends Controller
         $res =  Http::withOptions([
                     'verify' => false, // Desactivar verificación de certificados
                 ])->withHeaders([
-                    'Application' => Veris::APPLICATION_FARMACIA,
+                    'Application' => Veris::APPLICATION_PHX,
                     'Authorization' => 'Basic '.base64_encode(strtoupper($user) .":". $password),
                 ])->post(Veris::BASE_URL.$method);
         
         $response = json_decode($res->body());
 
+        // dump(Veris::APPLICATION_PHX);
+        // dump(Veris::BASE_URL.$method);
+        // dump('Basic '.base64_encode(strtoupper($user) .":". $password));
+        // dd($response);
+
         if($response->code == 200){
             switch($response->data->estadoUsuario) {
                 case 'CONFIRMED':
                     
-                    /*$method = '/'.Veris::FACTURACION_WAR.'/v1/usuarios/'.$response->data->secuenciaUsuario.'?tipoSucursal=TODOS';
+                    $method = '/'.Veris::FACTURACION_WAR.'/v1/usuarios/'.$response->data->secuenciaUsuario.'?tipoSucursal=TODOS';
                     $dataRoles = Veris::call([
                         'endpoint' => Veris::BASE_URL.$method,
                         'method'   => 'GET',
-                        'application' => Veris::APPLICATION_FARMACIA,
+                        'application' => Veris::APPLICATION_PHX,
                         'token'    => $response->data->idToken,
                         'data'     => $data
                     ]);
@@ -49,7 +54,7 @@ class SeguridadesController extends Controller
 
                     $existe = $roles->contains(function ($item) {
                         return $item->codigoRol == 1121 && trim($item->nombreRol) == 'GUIA DE DESPACHO USUARIO2';
-                    });*/
+                    });
                     $existe = true;
                     // dump($existe);
 
@@ -81,7 +86,7 @@ class SeguridadesController extends Controller
         if(isset($message)){
             session()->flash('mensaje', $message);
             session()->flash('user', strtoupper($user));
-            return redirect('/external/farmacia/login')
+            return redirect('/empresarial')
                     ->with('accessToken','');
         }
     }
@@ -105,8 +110,10 @@ class SeguridadesController extends Controller
             'method'    => 'POST'
         ]);
 
-        // echo Veris::BASE_URL.$method;
+        // dump(Veris::BASE_URL.$method);
+        // dump(Veris::APPLICATION_PHX);
         // dd($response);
+
         if($response->code == 200){
             if ($response->data->estado != "A") {
                 Session::put('claveActual', $password);

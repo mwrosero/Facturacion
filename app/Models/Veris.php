@@ -11,23 +11,23 @@ class Veris extends Model
 {
     use HasFactory;
     //QkFDS0VORFBIQU5UT006Q2xAdmUxMjM0 -> QkFDS0VORFBIQU5UT006UGhAbnQwbVQzJHQjMjAyNSE=
-    //DEV ORACLE
+    //DEV https://comprobantes.veris.com.ec/
     public const BASE_URL = 'https://api-phantomx.veris.com.ec';
     public const BASE_WAR = 'financiero';
-    public const FACTURACION_WAR = 'seguridadtest';
+    public const FACTURACION_WAR = 'seguridad';
     public const BASE_WAR_GENERAL = 'generaltest';
     public const BASE_WAR_AI = 'agents-ai';
     public const CANAL_ORIGEN = 'MVE_CMV';
     public const CANAL_ORIGEN_EXTERNAL = 'VER_CMV';
     public const CANAL_ORIGEN_EXTERNAL_PARAMI = 'VER_PMF';
     public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
-    public const APPLICATION_FARMACIA = 'UEhBTlRPTVhfQkFDS0VORA==';
+    public const APPLICATION_PHX = 'UEhBTlRPTVhfV0VC';
     public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';
     public const IDORGANIZACIONRESULTADOSLAB = '365509c8-9596-4506-a5b3-487782d5876e';
     public const BASICAUTHDIGITALES = 'd3NhcHBjZW50cmljbzpDQVM1Nzg5Yjg2TWRyNUMzbnRyMWMw';
-    public const BASICAUTHFACTURACION = 'QkFDS0VORFBIQU5UT006UGhAbnQwbVQzJHQjMjAyNSE=';
+    public const BASICAUTHFACTURACION = 'QkFDS0VORFBIQU5UT006UGhAbnQwbUQzdiMyNSE=';
 
-    //DEV POSTGRES
+    //DEV https://facturacion.akold.com/
     // public const BASE_URL = 'https://api-phantomx.veris.com.ec';
     // public const BASE_WAR = 'financierotest';
     // public const FACTURACION_WAR = 'seguridadtest';
@@ -37,7 +37,7 @@ class Veris extends Model
     // public const CANAL_ORIGEN_EXTERNAL = 'VER_CMV';
     // public const CANAL_ORIGEN_EXTERNAL_PARAMI = 'VER_PMF';
     // public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
-    // public const APPLICATION_FARMACIA = 'UEhBTlRPTVhfV0VC';
+    // public const APPLICATION_PHX = 'UEhBTlRPTVhfV0VC';
     // public const IDORGANIZACION = 'adf4e264-cd20-4653-9a44-025b13050992';
     // public const IDORGANIZACIONRESULTADOSLAB = '365509c8-9596-4506-a5b3-487782d5876e';
     // public const BASICAUTHDIGITALES = 'd3NhcHBjZW50cmljbzpDQVM1Nzg5Yjg2TWRyNUMzbnRyMWMw';
@@ -53,7 +53,7 @@ class Veris extends Model
     // public const CANAL_ORIGEN_EXTERNAL = 'VER_CMV';
     // public const CANAL_ORIGEN_EXTERNAL_PARAMI = 'VER_PMF';
     // public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
-    // public const APPLICATION_FARMACIA = 'UEhBTlRPTVhfV0VC';
+    // public const APPLICATION_PHX = 'UEhBTlRPTVhfV0VC';
     // public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';
     // public const IDORGANIZACIONRESULTADOSLAB = '365509c8-9596-4506-a5b3-487782d5876e';
     // public const BASICAUTHDIGITALES = 'd3NhcHBjZW50cmljbzpDQVM1Nzg5Yjg2TWRyNUMzbnRyMWMw';
@@ -135,6 +135,8 @@ class Veris extends Model
         }
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+        // dump($header);
 
         // LOGIN
         if( isset($config['username']) && isset($config['password'])){
