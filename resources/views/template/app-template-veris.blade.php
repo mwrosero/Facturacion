@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="{{ asset('../../assets/') }}" data-template="vertical-menu-template">
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets" data-template="vertical-menu-template">
 
 <head>
     <meta charset="utf-8" />
@@ -362,7 +362,7 @@
 
     <!-- Main JS -->
     <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/main.js"></script>
-    
+
     <!-- Page JS -->
     <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/veris-helper.js?v=1.1.1"></script>
 
