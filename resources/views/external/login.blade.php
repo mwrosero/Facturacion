@@ -60,7 +60,7 @@
         <a class="txt-veris fs-12" href="/recuperar-clave"> Olvidé mi contraseña</a>
     </div>
     <div class="mt-4 mb-3">
-        <button class="btn d-grid w-100 btn-primary-veris fs--18 line-height-24 fw-medium px-4 py-3 rounded" id="btnLogin" type="submit">{{ __('Iniciar sesión')}}</button>
+        <button class="btn d-grid w-100 btn-primary-veris fs--18 line-height-24 fw-medium px-4 py-3 rounded" id="btnLogin" type="submit">{{ __('Acceder')}}</button>
     </div>
 </form>
 <script>
