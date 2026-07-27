@@ -21,7 +21,7 @@ class Veris extends Model
     public const CANAL_ORIGEN_EXTERNAL = 'VER_CMV';
     public const CANAL_ORIGEN_EXTERNAL_PARAMI = 'VER_PMF';
     public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
-    public const APPLICATION_FARMACIA = 'UEhBTlRPTVhfV0VC';
+    public const APPLICATION_FARMACIA = 'UEhBTlRPTVhfQkFDS0VORA==';
     public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';
     public const IDORGANIZACIONRESULTADOSLAB = '365509c8-9596-4506-a5b3-487782d5876e';
     public const BASICAUTHDIGITALES = 'd3NhcHBjZW50cmljbzpDQVM1Nzg5Yjg2TWRyNUMzbnRyMWMw';
