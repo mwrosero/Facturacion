@@ -173,6 +173,8 @@ Veris - Facturas
     let perPage = 10;
     document.addEventListener("DOMContentLoaded", async function () {
         inicializarDatePickers();
+        $('#sucursal').select2();
+
         await obtenerTiposComprobante();
         @if (!Session::has('user_external'))
         await obtenerSucursales();
@@ -530,6 +532,18 @@ Veris - Facturas
     }
     .file-view:hover{
         color: var(--verisAi) !important;
+    }
+    .select2-results__option {
+        text-transform: capitalize;
+    }
+    span.select2-selection.select2-selection--single {
+        border: 1px solid #005AA5 !important;
+        background-color: #ffffff;
+        color: #005AA5;
+    }
+    span#select2-sucursal-container {
+        color: #005AA5;
+        text-transform: capitalize;
     }
 </style>
 @endpush
