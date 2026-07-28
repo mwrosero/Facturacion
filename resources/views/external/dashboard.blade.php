@@ -384,7 +384,7 @@ Veris - Facturas
         let url_param_add = ``;
         @if (!Session::has('user_external'))
             let sucursal = $('#sucursal option:selected').val();
-            if(sucursal == "T"){
+            if(sucursal !== ""){
                 url_param_add += `&codigoSucursal=${sucursal}`;
             }
 
