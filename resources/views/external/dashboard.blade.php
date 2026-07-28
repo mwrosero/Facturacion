@@ -40,10 +40,8 @@ Veris - Facturas
                                         </div>
                                         <div class="col-12 col-sm-6 col-md-4">
                                             <label for="tipoComprobante" class="form-label">Tipo de comprobante</label>
-                                            <select id="tipoComprobante" name="tipoComprobante" class="form-select select2 w-100" data-style="btn-default">
+                                            <select id="tipoComprobante" name="tipoComprobante" class="form-select select2 w-100 text-capitalize" data-style="btn-default">
                                                 <option value="">Todos</option>
-                                                <option value="F">Factura</option>
-                                                <option value="NC">Nota de Crédito</option>
                                             </select>
                                         </div>
                                         <div class="col-12 col-sm-6 col-md-4">
@@ -68,13 +66,13 @@ Veris - Facturas
                                         </div>
                                         <div class="col-12 col-sm-6 col-md-4">
                                             <label for="sucursal" class="form-label">Sucursal</label>
-                                            <select id="sucursal" name="sucursal" class="form-select select2 w-100" data-style="btn-default">
+                                            <select id="sucursal" name="sucursal" class="form-select select2 w-100 text-capitalize" data-style="btn-default">
                                                 <option value="">Todas</option>
                                             </select>
                                         </div>
                                         <div class="col-12 col-sm-6 col-md-4">
                                             <label for="estado" class="form-label">Estado</label>
-                                            <select id="estado" name="estado" class="form-select select2 w-100" data-style="btn-default">
+                                            <select id="estado" name="estado" class="form-select select2 w-100 text-capitalize" data-style="btn-default">
                                                 <option value="">Todos</option>
                                                 <option value="A">Autorizados</option>
                                                 <option value="N">No Autorizados</option>
@@ -341,7 +339,7 @@ Veris - Facturas
             {{-- let elem = `<option value="" disabled selected>Selecciona una opción</option>`; --}}
             let elem = `<option value="">Todas</option>`;
             $.each(data.data, function(key, value){
-                elem += `<option value="${value.codigoSucursal}">${value.nombreSucursal}</option>`;
+                elem += `<option class="text-capitalize" value="${value.codigoSucursal}">${value.nombreSucursal.toLowerCase()}</option>`;
             })
             $('#sucursal').html(elem);
         }
@@ -364,7 +362,7 @@ Veris - Facturas
         if(data.code == 200){
             let elem = `<option value="" disabled selected>Todos</option>`;
             $.each(data.data, function(key, value){
-                elem += `<option value="${value.codigoTipoComprobante}">${value.nombreTipoComprobante}</option>`;
+                elem += `<option class="text-capitalize" value="${value.nemonico}">${value.nombreTipoComprobante.toLowerCase()}</option>`;
             })
             $('#tipoComprobante').html(elem);
         }else{
