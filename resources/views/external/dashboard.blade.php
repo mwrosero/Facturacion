@@ -328,6 +328,13 @@ Veris - Facturas
         args["endpoint"] = `${api_url}/${api_war_general}/v1/sucursales?codigoEmpresa=1&tipoSucursal=TODOS&grupoSucursal=TODOS&mostrarSucursalPrioritaria=true`
         args["method"] = "GET";
         args["showLoader"] = false;
+        @if (Session::has('user_external'))
+        args["codigoUsuarioPortal"] = "{{ $codigoUsuarioPortal }}";
+        args["tokenPortalUsuario"] = "{{ $tokenPortalUsuario }}";
+        args["token"] = "{{ $accessToken }}";
+        @else
+        args["token"] = "{{ Session::get('accessToken') }}";
+        @endif
         const data = await call(args);
         console.log(data);
         if(data.code == 200){
@@ -345,14 +352,21 @@ Veris - Facturas
         args["endpoint"] = `${api_url}/${api_war_general}/v1/tipos_comprobantes?codigoEmpresa=1&estado=ACTIVO`
         args["method"] = "GET";
         args["showLoader"] = false;
+        @if (Session::has('user_external'))
+        args["codigoUsuarioPortal"] = "{{ $codigoUsuarioPortal }}";
+        args["tokenPortalUsuario"] = "{{ $tokenPortalUsuario }}";
+        args["token"] = "{{ $accessToken }}";
+        @else
+        args["token"] = "{{ Session::get('accessToken') }}";
+        @endif
         const data = await call(args);
         console.log(data);
         if(data.code == 200){
-            let elem = `<option value="" disabled selected>Selecciona una opción</option>`;
+            let elem = `<option value="" disabled selected>Todos</option>`;
             $.each(data.data, function(key, value){
-                elem += `<option value="${value.nemonico}">${value.nombreTipoComprobante}</option>`;
+                elem += `<option value="${value.codigoTipoComprobante}">${value.nombreTipoComprobante}</option>`;
             })
-            $('#sucursal').html(elem);
+            $('#tipoComprobante').html(elem);
         }else{
             if(data.message == "Sesión de portal inválida o expirada." || data.message == "Error de autenticación: El token ha caducado o no es válido"){
                 logoutSystem(data.message);
