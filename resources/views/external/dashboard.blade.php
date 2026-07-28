@@ -446,7 +446,7 @@ Veris - Facturas
                     <td>${ (value.fechaEmision !== null) ? (value.fechaEmision.split(" "))[0] : "" }</td>
                     <td>${ (value.fechaProcesado !== null) ? value.fechaProcesado : "" }</td>
                     <td>${value.nombreTipoComprobante}</td>
-                    <td>$${value.valorTotal.toFixed(2)}</td>
+                    <td>$${parseFloat(value.valorTotal).toFixed(2)}</td>
                     ${td_interno}
                     <td>
                         <div class="w-100 d-flex justify-content-start align-items-center gap-2" data-rel='${JSON.stringify(value)}'>
