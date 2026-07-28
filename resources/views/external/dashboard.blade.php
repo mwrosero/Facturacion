@@ -105,8 +105,10 @@ Veris - Facturas
                                     <thead>
                                         <tr>
                                             <th>Nro. Comprobante</th>
-                                            <th>Fecha</th>
+                                            <th>Fecha Emisión</th>
+                                            <th>Fecha Autorización</th>
                                             <th>Tipo</th>
+                                            <th>Total</th>
                                             @if (!Session::has('user_external'))
                                             <th>Nro. Documento</th>
                                             <th>Estado</th>
@@ -378,7 +380,7 @@ Veris - Facturas
             }
             
             let estado = $('#estado option:selected').val();
-            if(estado == "T"){
+            if(estado !== ""){
                 url_param_add += `&estadoMensaje=${estado}`;
             }
         @endif
@@ -427,8 +429,10 @@ Veris - Facturas
                 @endif
                 elem += `<tr>
                     <td>${value.numeroComprobante}</td>
-                    <td>${value.fechaProcesado}</td>
+                    <td>${ (value.fechaEmision !== null) ? (value.fechaEmision.split(" "))[0] : "" }</td>
+                    <td>${ (value.fechaProcesado !== null) ? value.fechaProcesado : "" }</td>
                     <td>${value.nombreTipoComprobante}</td>
+                    <td>$${value.valorTotal.toFixed(2)}</td>
                     ${td_interno}
                     <td>
                         <div class="w-100 d-flex justify-content-start align-items-center gap-2" data-rel='${JSON.stringify(value)}'>
