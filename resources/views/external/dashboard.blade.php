@@ -173,6 +173,10 @@ Veris - Facturas
     let perPage = 10;
     document.addEventListener("DOMContentLoaded", async function () {
         inicializarDatePickers();
+        await obtenerTiposComprobante();
+        @if (!Session::has('user_external'))
+        await obtenerSucursales();
+        @endif
 
         $('body').on('click', '.pdf-view', function(){
             $('#modalPDF').modal('show');
@@ -220,7 +224,7 @@ Veris - Facturas
         args["tokenPortalUsuario"] = "{{ $tokenPortalUsuario }}";
         args["token"] = "{{ $accessToken }}";
         @else
-        args["token"] = "{{ $accessToken }}";
+        args["token"] = "{{ Session::get('accessToken') }}";
         @endif
         args["showLoader"] = true;
         
