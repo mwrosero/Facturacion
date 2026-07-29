@@ -364,7 +364,7 @@ Veris - Facturas
         if(data.code == 200){
             let elem = `<option value="" disabled selected>Todos</option>`;
             $.each(data.data, function(key, value){
-                elem += `<option class="text-capitalize" value="${value.nemonico}">${value.nombreTipoComprobante.toLowerCase()}</option>`;
+                elem += `<option class="text-capitalize" value="${value.nombreTipoComprobante}">${value.nombreTipoComprobante.toLowerCase()}</option>`;
             })
             $('#tipoComprobante').html(elem);
         }else{
