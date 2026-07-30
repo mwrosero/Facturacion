@@ -24,7 +24,7 @@ Veris - Facturas
                         <div class="card accordion-item active">
                             <h2 class="accordion-header" id="headingOne">
                                 <button type="button" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#accordionOne" aria-expanded="true" aria-controls="accordionOne">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-filter me-2" width="17" height="17" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-filter me-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                        <path d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z"></path>
                                     </svg>
@@ -86,7 +86,12 @@ Veris - Facturas
                                         </div>
                                         <div class="col-2 col-sm-1 col-md-1">
                                             <a href="{{ request()->url() }}" type="button" class="btn bg-alt w-100 mt-0 mt-sm-4" title="Limpiar Filtro">
-                                                <img class="ico-button" src="{{ asset('assets/img/veris/reset-ico.svg') }}">
+                                                {{-- <img class="ico-button" src="{{ asset('assets/img/veris/reset-ico.svg') }}"> --}}
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-filter-off ico-button">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M8 4h12v2.172a2 2 0 0 1 -.586 1.414l-3.914 3.914m-.5 3.5v4l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227" />
+                                                    <path d="M3 3l18 18" />
+                                                </svg>
                                             </a>
                                         </div>
                                     </div>
@@ -191,9 +196,9 @@ Veris - Facturas
             }
         })
 
-        $('body').on('click', '.pdf-view', function(){
+        {{-- $('body').on('click', '.pdf-view', function(){
             $('#modalPDF').modal('show');
-        })
+        }) --}}
 
         $('body').on('click', '#btn-buscar', async function(){
             page = 1;
@@ -452,9 +457,11 @@ Veris - Facturas
                         <td>${value.estadoMensaje}</td>
                         <td>${value.nombreSucursal}</td>`;
                 @endif
-                let copy_elem = `<i class="fa-solid fa-copy auth-view" title="Copiar número de autorización"></i>`;
+                
+                let copy_elem = ``;
                 if(value.numeroAutorizacion !== null){
-                    copy_elem += ``
+                    copy_elem += `<img class="auth-view" src="{{ asset('assets/images/clipboard.svg') }}" width="18px" height="18px">`;
+                    {{-- copy_elem += `<i class="fa-solid fa-copy auth-view" title="Copiar número de autorización"></i>` --}}
                 }
                 elem += `<tr>
                     <td>${value.numeroComprobante}</td>
@@ -466,8 +473,10 @@ Veris - Facturas
                     <td>
                         <div class="w-100 d-flex justify-content-start align-items-center gap-2" data-rel='${JSON.stringify(value)}'>
                             ${copy_elem}
-                            <i class="fa-solid fa-file-excel file-view" type-rel="XML"></i>
-                            <i class="fa-solid fa-file-pdf file-view" type-rel="PDF"></i>
+                            <img class="file-view" type-rel="XML" src="{{ asset('assets/images/xml.svg') }}" width="18px" height="18px">
+                            <img class="file-view" type-rel="PDF" src="{{ asset('assets/images/pdf.svg') }}" width="18px" height="18px">
+                            {{-- <i class="fa-solid fa-file-excel file-view" type-rel="XML"></i>
+                            <i class="fa-solid fa-file-pdf file-view" type-rel="PDF"></i> --}}
                         </div>
                     </td>
                 </tr>`;
@@ -566,6 +575,10 @@ Veris - Facturas
     }
     .auth-view:active {
         color: var(--verisAi) !important;
+    }
+    td{
+        font-size: 14px;
+        line-height: 18px;
     }
 </style>
 @endpush
