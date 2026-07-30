@@ -180,6 +180,17 @@ Veris - Facturas
         await obtenerSucursales();
         @endif
 
+        $('body').on('click', '.auth-view', async function(){
+            let comprobante = JSON.parse($(this).parent().attr('data-rel'));
+            // console.log(comprobante)
+            try {
+                await navigator.clipboard.writeText(comprobante.numeroAutorizacion);
+                showMessage('success', `Número de autorización copiado al portapapeles`)
+            } catch (err) {
+                showMessage('error', err)
+            }
+        })
+
         $('body').on('click', '.pdf-view', function(){
             $('#modalPDF').modal('show');
         })
@@ -441,6 +452,10 @@ Veris - Facturas
                         <td>${value.estadoMensaje}</td>
                         <td>${value.nombreSucursal}</td>`;
                 @endif
+                let copy_elem = `<i class="fa-solid fa-copy auth-view" title="Copiar número de autorización"></i>`;
+                if(value.numeroAutorizacion !== null){
+                    copy_elem += ``
+                }
                 elem += `<tr>
                     <td>${value.numeroComprobante}</td>
                     <td>${ (value.fechaEmision !== null) ? (value.fechaEmision.split(" "))[0] : "" }</td>
@@ -450,6 +465,7 @@ Veris - Facturas
                     ${td_interno}
                     <td>
                         <div class="w-100 d-flex justify-content-start align-items-center gap-2" data-rel='${JSON.stringify(value)}'>
+                            ${copy_elem}
                             <i class="fa-solid fa-file-excel file-view" type-rel="XML"></i>
                             <i class="fa-solid fa-file-pdf file-view" type-rel="PDF"></i>
                         </div>
@@ -544,6 +560,12 @@ Veris - Facturas
     span#select2-sucursal-container {
         color: #005AA5;
         text-transform: capitalize;
+    }
+    .auth-view{
+        cursor: pointer;
+    }
+    .auth-view:active {
+        color: var(--verisAi) !important;
     }
 </style>
 @endpush

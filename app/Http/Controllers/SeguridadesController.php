@@ -252,14 +252,14 @@ class SeguridadesController extends Controller
             'method'   => 'POST',
             'token'    => $accessToken
         ]);
-        // dd($response);
+        
         if($response->code != 200){
             session()->flash('mensaje', $response->message);
             session()->flash('numeroIdentificacion', $data['numeroIdentificacion']);
             return redirect('/recuperar-clave');
         }
 
-        session()->flash('mensaje', $response->message);
+        session()->flash('mensaje', $response->data->mensaje);
         return redirect('/');
 
     }
