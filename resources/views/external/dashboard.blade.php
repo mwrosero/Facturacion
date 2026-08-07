@@ -454,7 +454,7 @@ Veris - Facturas
                 let td_interno = ``;
                 @if (!Session::has('user_external'))
                     td_interno += `<td>${value.numeroIdentificacion}</td>
-                        <td>${value.estadoMensaje}</td>
+                        <td>${ (value.estadoMensaje !== null) ? value.estadoMensaje : "" }</td>
                         <td>${value.nombreSucursal}</td>`;
                 @endif
                 
