@@ -12,20 +12,20 @@ class Veris extends Model
     use HasFactory;
     //QkFDS0VORFBIQU5UT006Q2xAdmUxMjM0 -> QkFDS0VORFBIQU5UT006UGhAbnQwbVQzJHQjMjAyNSE=
     //DEV https://comprobantes.veris.com.ec/
-    public const BASE_URL = 'https://api-phantomx.veris.com.ec';
-    public const BASE_WAR = 'financiero';
-    public const FACTURACION_WAR = 'seguridad';
-    public const BASE_WAR_GENERAL = 'generaltest';
-    public const BASE_WAR_AI = 'agents-ai';
-    public const CANAL_ORIGEN = 'MVE_CMV';
-    public const CANAL_ORIGEN_EXTERNAL = 'VER_CMV';
-    public const CANAL_ORIGEN_EXTERNAL_PARAMI = 'VER_PMF';
-    public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
-    public const APPLICATION_PHX = 'UEhBTlRPTVhfV0VC';
-    public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';
-    public const IDORGANIZACIONRESULTADOSLAB = '365509c8-9596-4506-a5b3-487782d5876e';
-    public const BASICAUTHDIGITALES = 'd3NhcHBjZW50cmljbzpDQVM1Nzg5Yjg2TWRyNUMzbnRyMWMw';
-    public const BASICAUTHFACTURACION = 'QkFDS0VORFBIQU5UT006UGhAbnQwbUQzdiMyNSE=';
+    // public const BASE_URL = 'https://api-phantomx.veris.com.ec';
+    // public const BASE_WAR = 'financiero';
+    // public const FACTURACION_WAR = 'seguridad';
+    // public const BASE_WAR_GENERAL = 'generaltest';
+    // public const BASE_WAR_AI = 'agents-ai';
+    // public const CANAL_ORIGEN = 'MVE_CMV';
+    // public const CANAL_ORIGEN_EXTERNAL = 'VER_CMV';
+    // public const CANAL_ORIGEN_EXTERNAL_PARAMI = 'VER_PMF';
+    // public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
+    // public const APPLICATION_PHX = 'UEhBTlRPTVhfV0VC';
+    // public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';
+    // public const IDORGANIZACIONRESULTADOSLAB = '365509c8-9596-4506-a5b3-487782d5876e';
+    // public const BASICAUTHDIGITALES = 'd3NhcHBjZW50cmljbzpDQVM1Nzg5Yjg2TWRyNUMzbnRyMWMw';
+    // public const BASICAUTHFACTURACION = 'QkFDS0VORFBIQU5UT006UGhAbnQwbUQzdiMyNSE=';
 
     //DEV https://facturacion.akold.com/
     // public const BASE_URL = 'https://api-phantomx.veris.com.ec';
@@ -44,20 +44,20 @@ class Veris extends Model
     // public const BASICAUTHFACTURACION = 'QkFDS0VORFBIQU5UT006UGhAbnQwbVQzJHQjMjAyNSE=';
 
     //PROD 
-    // public const BASE_URL = 'https://api.phantomx.com.ec';
-    // public const BASE_WAR = 'financiero';
-    // public const FACTURACION_WAR = 'seguridad';
-    // public const BASE_WAR_GENERAL = 'general';
-    // public const BASE_WAR_AI = 'agents-ai';
-    // public const CANAL_ORIGEN = 'MVE_CMV';
-    // public const CANAL_ORIGEN_EXTERNAL = 'VER_CMV';
-    // public const CANAL_ORIGEN_EXTERNAL_PARAMI = 'VER_PMF';
-    // public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
-    // public const APPLICATION_PHX = 'UEhBTlRPTVhfV0VC';
-    // public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';
-    // public const IDORGANIZACIONRESULTADOSLAB = '365509c8-9596-4506-a5b3-487782d5876e';
-    // public const BASICAUTHDIGITALES = 'd3NhcHBjZW50cmljbzpDQVM1Nzg5Yjg2TWRyNUMzbnRyMWMw';
-    // public const BASICAUTHFACTURACION = 'YmFja2VuZHBoYW50b206QmFja1BAbnRoMG1QQHNzMjAyMQ==';
+    public const BASE_URL = 'https://api.phantomx.com.ec';
+    public const BASE_WAR = 'financiero';
+    public const FACTURACION_WAR = 'seguridad';
+    public const BASE_WAR_GENERAL = 'general';
+    public const BASE_WAR_AI = 'agents-ai';
+    public const CANAL_ORIGEN = 'MVE_CMV';
+    public const CANAL_ORIGEN_EXTERNAL = 'VER_CMV';
+    public const CANAL_ORIGEN_EXTERNAL_PARAMI = 'VER_PMF';
+    public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
+    public const APPLICATION_PHX = 'UEhBTlRPTVhfV0VC';
+    public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';
+    public const IDORGANIZACIONRESULTADOSLAB = '365509c8-9596-4506-a5b3-487782d5876e';
+    public const BASICAUTHDIGITALES = 'd3NhcHBjZW50cmljbzpDQVM1Nzg5Yjg2TWRyNUMzbnRyMWMw';
+    public const BASICAUTHFACTURACION = 'YmFja2VuZHBoYW50b206QmFja1BAbnRoMG1QQHNzMjAyMQ==';
 
     static function call(Array $config)
     {
